@@ -24,9 +24,7 @@ void Movemen(Hero* player, std::vector<Wall>* seznamZidov, std::vector<Bandage>*
 
 int main() {
 
-	Hero player(60, koordinate(2, 2));
-	std::cout << "Hp: " << player.getHp() << std::endl;
-
+	Hero player(60, koordinate());
 
 	std::vector<Wall> seznamZidov;
 	seznamZidov.push_back(Wall(20, koordinate(1, 2)));
@@ -38,14 +36,20 @@ int main() {
 	seznamZdravil.push_back(Bandage(5, koordinate(3, 3)));
 
 
-	Movemen(&player, &seznamZidov, &seznamZdravil);
-	std::cout << "Hp: " << player.getHp() << std::endl;
-	player.moveEast();
-	
-	Movemen(&player, &seznamZidov, &seznamZdravil);
-	std::cout << "Hp: " << player.getHp() << std::endl;
-	player.moveSouth();
+	while (true) {
 
-	Movemen(&player, &seznamZidov, &seznamZdravil);
-	std::cout << "Hp: " << player.getHp() << std::endl;
+		Movemen(&player, &seznamZidov, &seznamZdravil);
+		std::cout << "Hp: " << player.getHp() << std::endl;
+		player.getLocation().write();
+		std::cout << std::endl;
+
+		char c;
+		std::cin >> c;
+
+		if (c == 'b') break;
+		else if (c == 'w') player.moveNorth();
+		else if (c == 'd') player.moveEast();
+		else if (c == 's') player.moveSouth();
+		else if (c == 'a') player.moveWest();
+	}
 }
