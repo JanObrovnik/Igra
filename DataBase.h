@@ -19,6 +19,9 @@ public:
 };
 
 
+std::ostream& operator<<(std::ostream& os, const koordinate& ko);
+
+
 inline bool operator==(const koordinate& ko1, const koordinate& ko2) {
 	return ko1.x == ko2.x && ko1.y == ko2.y;
 }
@@ -70,16 +73,21 @@ inline koordinate operator/(const koordinate& ko1, const int dod) {
 
 
 
-class Wall {
+class Wall { //////////////////
+
+private:
+};
+
+class Trap {
 
 private:
 	unsigned short hardnessLevel;
 	koordinate point;
 
 public:
-	Wall() : hardnessLevel(0), point(koordinate()) {}
-	Wall(koordinate xy) : hardnessLevel(0), point(xy) {}
-	Wall(unsigned short hardness, koordinate xy) : hardnessLevel(hardness), point(xy) {}
+	Trap() : hardnessLevel(0), point(koordinate()) {}
+	Trap(koordinate xy) : hardnessLevel(0), point(xy) {}
+	Trap(unsigned short hardness, koordinate xy) : hardnessLevel(hardness), point(xy) {}
 
 	unsigned short getHardness() const {
 		return hardnessLevel;
@@ -122,12 +130,12 @@ class Hero {
 
 private:
 	int hHp, maxHHp;
-	koordinate point;
+	koordinate point, pastPoint; /////////////// dodatek spomina za wall
 
 public:
-	Hero() : hHp(100), maxHHp(hHp), point(koordinate()) {}
-	Hero(int hp) : hHp(hp), maxHHp(hHp), point(koordinate()) {}
-	Hero(int hp, koordinate xy) : hHp(hp), maxHHp(hHp), point(xy) {}
+	Hero() : hHp(100), maxHHp(hHp), point(koordinate()), pastPoint(point) {}
+	Hero(int hp) : hHp(hp), maxHHp(hHp), point(koordinate()), pastPoint(point) {}
+	Hero(int hp, koordinate xy) : hHp(hp), maxHHp(hHp), point(xy), pastPoint(point) {}
 
 	int getHp() const {
 		return hHp;
@@ -152,15 +160,25 @@ public:
 	}
 
 	void moveNorth() {
-		point.y--;
+		if (canMove()) point.y--;
+		else cannotMoveMessage();
 	}
 	void moveEast() {
-		point.x++;
+		if (canMove()) point.x++;
+		else cannotMoveMessage();
 	}
 	void moveSouth() {
-		point.y++;
+		if (canMove()) point.y++;
+		else cannotMoveMessage();
 	}
 	void moveWest() {
-		point.x--;
+		if (canMove()) point.x--;
+		else cannotMoveMessage();
+	}
+	inline bool canMove() const {
+		return hHp > 0;
+	}
+	inline void cannotMoveMessage() const {
+		std::cout << "Cannot move!" << std::endl;
 	}
 };
