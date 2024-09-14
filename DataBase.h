@@ -73,9 +73,45 @@ inline koordinate operator/(const koordinate& ko1, const int dod) {
 
 
 
-class Wall { //////////////////
+class Wall {
 
 private:
+	bool exist;
+	koordinate point;
+
+public:
+	Wall() : exist(true), point(koordinate()) {}
+	Wall(koordinate xy) : exist(true), point(xy) {}
+	Wall(bool ex, koordinate xy) : exist(ex), point(xy) {}
+
+	bool getExist() const {
+		return exist;
+	}
+	koordinate getLocation() const {
+		return point;
+	}
+
+	void effect() {
+		if (exist) destroy();
+		else build();
+	}
+	void destroy() {
+		exist = false;
+	}
+	void build() {
+		exist = true;
+	}
+};
+
+class Portal { //////////////
+
+private:
+	bool open;
+	koordinate point0, point1;
+
+public:
+	Portal(koordinate xy0, koordinate xy1) : open(true), point0(xy0), point1(xy1) {}
+	Portal(bool open, koordinate xy0, koordinate xy1) : open(open), point0(xy0), point1(xy1) {}
 };
 
 class Trap {
@@ -130,7 +166,7 @@ class Hero {
 
 private:
 	int hHp, maxHHp;
-	koordinate point, pastPoint; /////////////// dodatek spomina za wall
+	koordinate point, pastPoint; /////////////// dodatek spomina za portal
 
 public:
 	Hero() : hHp(100), maxHHp(hHp), point(koordinate()), pastPoint(point) {}
@@ -160,19 +196,31 @@ public:
 	}
 
 	void moveNorth() {
-		if (canMove()) point.y--;
+		if (canMove()) {
+			pastPoint = point;
+			point.y--;
+		}
 		else cannotMoveMessage();
 	}
 	void moveEast() {
-		if (canMove()) point.x++;
+		if (canMove()) {
+			pastPoint = point;
+			point.x++;
+		}
 		else cannotMoveMessage();
 	}
 	void moveSouth() {
-		if (canMove()) point.y++;
+		if (canMove()) {
+			pastPoint = point;
+			point.y++;
+		}
 		else cannotMoveMessage();
 	}
 	void moveWest() {
-		if (canMove()) point.x--;
+		if (canMove()) {
+			pastPoint = point;
+			point.x--;
+		}
 		else cannotMoveMessage();
 	}
 	inline bool canMove() const {
@@ -180,5 +228,16 @@ public:
 	}
 	inline void cannotMoveMessage() const {
 		std::cout << "Cannot move!" << std::endl;
+	}
+	void moveBack() {
+		point = pastPoint;
+	}
+
+	inline bool collision(koordinate ko) const {
+		return point == ko;
+	}
+	inline koordinate collision(koordinate ko0, koordinate ko1) const {
+		if (point == ko0) return ko1;
+		else if (point == ko1) return ko0;
 	}
 };
