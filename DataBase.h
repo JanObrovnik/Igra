@@ -103,7 +103,7 @@ public:
 	}
 };
 
-class Portal { //////////////
+class Portal { ////////////// Pregled arrayev
 
 private:
 	bool open;
@@ -112,6 +112,20 @@ private:
 public:
 	Portal(koordinate xy0, koordinate xy1) : open(true), point0(xy0), point1(xy1) {}
 	Portal(bool open, koordinate xy0, koordinate xy1) : open(open), point0(xy0), point1(xy1) {}
+
+	koordinate getLocation0() const {
+		return point0;
+	}
+	koordinate getLocation1() const {
+		return point1;
+	}
+
+	void openPortal() {
+		open = open;
+	}
+	void closePortal() {
+		open = false;
+	}
 };
 
 class Trap {
@@ -160,18 +174,28 @@ public:
 	}
 };
 
+class Coin { //////////////////
+
+private:
+	unsigned short value;
+	koordinate point;
+
+public:
+
+};
+
 
 
 class Hero {
 
 private:
-	int hHp, maxHHp;
-	koordinate point, pastPoint; /////////////// dodatek spomina za portal
+	int hHp, maxHHp, coins;
+	koordinate point, pastPoint; /////////////// dodatek addCoins, setCoins, getCoins
 
 public:
-	Hero() : hHp(100), maxHHp(hHp), point(koordinate()), pastPoint(point) {}
-	Hero(int hp) : hHp(hp), maxHHp(hHp), point(koordinate()), pastPoint(point) {}
-	Hero(int hp, koordinate xy) : hHp(hp), maxHHp(hHp), point(xy), pastPoint(point) {}
+	Hero() : hHp(100), maxHHp(hHp), coins(0), point(koordinate()), pastPoint(point) {}
+	Hero(int hp) : hHp(hp), maxHHp(hHp), coins(0), point(koordinate()), pastPoint(point) {}
+	Hero(int hp, koordinate xy) : hHp(hp), maxHHp(hHp), coins(0), point(xy), pastPoint(point) {}
 
 	int getHp() const {
 		return hHp;
@@ -232,12 +256,18 @@ public:
 	void moveBack() {
 		point = pastPoint;
 	}
+	void teleport(Portal portal) {
+		point = teleportLocation(portal);
+	}
+	inline koordinate teleportLocation(Portal portal) const {
+		if (point == portal.getLocation0()) return portal.getLocation1();
+		if (point == portal.getLocation1()) return portal.getLocation0();
+	}
 
 	inline bool collision(koordinate ko) const {
 		return point == ko;
 	}
-	inline koordinate collision(koordinate ko0, koordinate ko1) const {
-		if (point == ko0) return ko1;
-		else if (point == ko1) return ko0;
+	inline bool collision(Portal portal) const {
+		return point == portal.getLocation0() || point == portal.getLocation1();
 	}
 };

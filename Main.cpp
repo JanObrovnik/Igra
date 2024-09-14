@@ -4,10 +4,8 @@
 
 
 
-static void Movemen(Hero* player, std::vector<Wall>* seznamZidov, std::vector<Trap>* seznamPasti, std::vector<Bandage>* seznamZdravil) {
+static void Movemen(Hero* player, std::vector<Wall>* seznamZidov, std::vector<Portal>* seznamPortalov, std::vector<Trap>* seznamPasti, std::vector<Bandage>* seznamZdravil) {
 
-
-	for (int i = 0; i < 0; i++); /////////////// dodatek zanke za portal
 	for (int i = 0; i < seznamZidov->size(); i++) {
 		//std::cout << "seznam Zidov " << i << std::endl;
 		if (player->collision((*seznamZidov)[i].getLocation()) && (*seznamZidov)[i].getExist()) {
@@ -15,6 +13,15 @@ static void Movemen(Hero* player, std::vector<Wall>* seznamZidov, std::vector<Tr
 			
 			return; // Prekine funkcijo 'Movement()'
 			//break; // Prekine samo zanko 'for()'
+		}
+	}
+	for (int i = 0; i < seznamPortalov->size(); i++) {
+		//std::cout << "seznam Portalov " << i << std::endl;
+		if (player->collision((*seznamPortalov)[i])) {
+			player->teleport((*seznamPortalov)[i]);
+
+			return;
+			//break;
 		}
 	}
 	for (int i = 0; i < seznamPasti->size(); i++) {
@@ -43,11 +50,17 @@ static void Movemen(Hero* player, std::vector<Wall>* seznamZidov, std::vector<Tr
 int main() {
 
 	Hero player(60, koordinate());
+	Hero playerBackup = player;
+
 
 	std::vector<Wall> seznamZidov;
 	seznamZidov.push_back(Wall(koordinate(3, 0)));
 	seznamZidov.push_back(Wall(koordinate(3, 1)));
 	std::vector<Wall> seznamZidovBackup = seznamZidov;
+
+	std::vector<Portal> seznamPortalov;
+	seznamPortalov.push_back(Portal(koordinate(4, 0), koordinate(6, 8)));
+	std::vector<Portal> seznamPortalovBackup = seznamPortalov;
 
 	std::vector<Trap> seznamPasti;
 	seznamPasti.push_back(Trap(20, koordinate(1, 2)));
@@ -60,10 +73,14 @@ int main() {
 	seznamZdravil.push_back(Bandage(5, koordinate(3, 3)));
 	std::vector<Bandage> seznamZdravilBackup = seznamZdravil;
 
+	std::vector<Coin> seznamKovancev;
+
+	std::vector<Coin> seznamKovancevReset = seznamKovancev;
 
 
 
-	Movemen(&player, &seznamZidov, &seznamPasti, &seznamZdravil);
+
+	Movemen(&player, &seznamZidov, &seznamPortalov, &seznamPasti, &seznamZdravil);
 	std::cout << "Hp: " << player.getHp() << "; " << player.getLocation() << std::endl;
 	std::cout << std::endl;
 
@@ -74,8 +91,9 @@ int main() {
 
 		if (c == 'b') break;
 		else if (c == 'r') {
-			player = Hero(60, koordinate());
+			player = playerBackup;
 			seznamZidov = seznamZidovBackup;
+			seznamPortalov = seznamPortalovBackup;
 			seznamPasti = seznamPastiBackup;
 			seznamZdravil = seznamZdravilBackup;
 		}
@@ -85,7 +103,7 @@ int main() {
 		else if (c == 'a') player.moveWest();
 
 
-		Movemen(&player, &seznamZidov, &seznamPasti, &seznamZdravil);
+		Movemen(&player, &seznamZidov, &seznamPortalov, &seznamPasti, &seznamZdravil);
 		std::cout << "Hp: " << player.getHp() << "; " << player.getLocation() << std::endl;
 		std::cout << std::endl;
 	}
