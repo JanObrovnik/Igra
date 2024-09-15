@@ -103,15 +103,44 @@ public:
 	}
 };
 
+class Door { /////////////////////
+
+private:
+	bool exist;
+	koordinate point;
+
+public:
+	Door(koordinate xy) : exist(true), point(xy) {}
+	Door(bool locked, koordinate xy) : exist(locked), point(xy) {}
+
+	bool getLocked() const {
+		return exist;
+	}
+	koordinate getLocation() const {
+		return point;
+	}
+
+	void effect() {
+		if (exist) unlock();
+		else lock();
+	}
+	void unlock() {
+		exist = false;
+	}
+	void lock() {
+		exist = true;
+	}
+};
+
 class Portal { ////////////// Pregled arrayev
 
 private:
-	bool open;
+	bool exist;
 	koordinate point0, point1;
 
 public:
-	Portal(koordinate xy0, koordinate xy1) : open(true), point0(xy0), point1(xy1) {}
-	Portal(bool open, koordinate xy0, koordinate xy1) : open(open), point0(xy0), point1(xy1) {}
+	Portal(koordinate xy0, koordinate xy1) : exist(true), point0(xy0), point1(xy1) {}
+	Portal(bool open, koordinate xy0, koordinate xy1) : exist(open), point0(xy0), point1(xy1) {}
 
 	koordinate getLocation0() const {
 		return point0;
@@ -120,11 +149,11 @@ public:
 		return point1;
 	}
 
-	void openPortal() {
-		open = open;
+	void open() {
+		exist = true;
 	}
-	void closePortal() {
-		open = false;
+	void close() {
+		exist = false;
 	}
 };
 
@@ -174,14 +203,35 @@ public:
 	}
 };
 
-class Coin { //////////////////
+class Coin {
 
 private:
 	unsigned short value;
 	koordinate point;
 
 public:
+	Coin(koordinate xy) : value(1), point(koordinate(xy)) {}
+	Coin(unsigned short value, koordinate xy) : value(value), point(koordinate(xy)) {}
 
+	unsigned short getValue() const {
+		return value;
+	}
+	koordinate getLocation() const {
+		return point;
+	}
+};
+
+class Key {
+
+private:
+	koordinate point;
+
+public:
+	Key(koordinate xy) : point(xy) {}
+
+	koordinate getLocation() const {
+		return point;
+	}
 };
 
 
@@ -189,13 +239,15 @@ public:
 class Hero {
 
 private:
-	int hHp, maxHHp, coins;
-	koordinate point, pastPoint; /////////////// dodatek addCoins, setCoins, getCoins
+	int hHp, maxHHp;
+	int coins, keys;
+	koordinate point, pastPoint;
 
 public:
-	Hero() : hHp(100), maxHHp(hHp), coins(0), point(koordinate()), pastPoint(point) {}
-	Hero(int hp) : hHp(hp), maxHHp(hHp), coins(0), point(koordinate()), pastPoint(point) {}
-	Hero(int hp, koordinate xy) : hHp(hp), maxHHp(hHp), coins(0), point(xy), pastPoint(point) {}
+	Hero() : hHp(100), maxHHp(hHp), coins(0), keys(0), point(koordinate()), pastPoint(point) {}
+	Hero(int hp) : hHp(hp), maxHHp(hHp), coins(0), keys(0), point(koordinate()), pastPoint(point) {}
+	Hero(int hp, koordinate xy) : hHp(hp), maxHHp(hHp), coins(0), keys(0), point(xy), pastPoint(point) {}
+	Hero(int hp, int coinsAmouth, int keysAmouth, koordinate xy) : hHp(hp), maxHHp(hHp), coins(coinsAmouth), keys(keysAmouth), point(xy), pastPoint(point) {}
 
 	int getHp() const {
 		return hHp;
@@ -205,6 +257,12 @@ public:
 	}
 	koordinate getLocation() const {
 		return point;
+	}
+	int getCoins() const {
+		return coins;
+	}
+	int getKeys() const {
+		return keys;
 	}
 
 	void heal(unsigned int amount) {
@@ -217,6 +275,15 @@ public:
 	void takeDamage(unsigned int amount) {
 		hHp -= amount;
 		if (hHp < 0) hHp = 0;
+	}
+	void addCoins(int value) {
+		coins += value;
+	}
+	void addKey() {
+		keys++;
+	}
+	void loseKey() {
+		keys--;
 	}
 
 	void moveNorth() {
