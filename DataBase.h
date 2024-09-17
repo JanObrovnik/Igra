@@ -1,5 +1,7 @@
 #pragma once
 #include <iostream>
+#include <vector>
+
 
 class koordinate {
 
@@ -336,5 +338,51 @@ public:
 	}
 	inline bool collision(Portal portal) const {
 		return point == portal.getLocation0() || point == portal.getLocation1();
+	}
+};
+
+
+struct Seznami {
+
+private:
+	Hero playerBackup;
+	std::vector<Wall> seznamZidovBackup;
+	std::vector<Door> seznamVratBackup;
+	std::vector<Portal> seznamPortalovBackup;
+	std::vector<Trap> seznamPastiBackup;
+	std::vector<Bandage> seznamZdravilBackup;
+	std::vector<Coin> seznamKovancevBackup;
+	std::vector<Key> seznamKljucevBackup;
+
+public:
+	Hero player;
+	std::vector<Wall> seznamZidov;
+	std::vector<Door> seznamVrat;
+	std::vector<Portal> seznamPortalov;
+	std::vector<Trap> seznamPasti;
+	std::vector<Bandage> seznamZdravil;
+	std::vector<Coin> seznamKovancev;
+	std::vector<Key> seznamKljucev;
+
+	void makeBackup() {
+		playerBackup = player;
+		seznamZidovBackup = seznamZidov;
+		seznamVratBackup = seznamVrat;
+		seznamPortalovBackup = seznamPortalov;
+		seznamPastiBackup = seznamPasti;
+		seznamZdravilBackup = seznamZdravil;
+		seznamKovancevBackup = seznamKovancev;
+		seznamKljucevBackup = seznamKljucev;
+	}
+
+	void restore() {
+		player = playerBackup;
+		seznamZidov = seznamZidovBackup;
+		seznamVrat = seznamVratBackup;
+		seznamPortalov = seznamPortalovBackup;
+		seznamPasti = seznamPastiBackup;
+		seznamZdravil = seznamZdravilBackup;
+		seznamKovancev = seznamKovancevBackup;
+		seznamKljucev = seznamKljucevBackup;
 	}
 };
