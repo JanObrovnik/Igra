@@ -144,6 +144,9 @@ public:
 	Portal(koordinate xy0, koordinate xy1) : exist(true), point0(xy0), point1(xy1) {}
 	Portal(bool open, koordinate xy0, koordinate xy1) : exist(open), point0(xy0), point1(xy1) {}
 
+	bool getExist() const {
+		return exist;
+	}
 	koordinate getLocation0() const {
 		return point0;
 	}
@@ -241,7 +244,7 @@ public:
 class Hero {
 
 private:
-	int hHp, maxHHp;
+	int hHp, maxHHp, attack, defence; ///////////////////// attack, defence
 	int coins, keys;
 	koordinate point, pastPoint;
 
@@ -340,6 +343,18 @@ public:
 		return point == portal.getLocation0() || point == portal.getLocation1();
 	}
 };
+
+class Monster { ////////////////// dodat v seznam
+
+private:
+	int hp, maxHp, attack, defence;
+	int coins;
+	koordinate point;
+
+public:
+
+};
+
 
 
 struct Seznami {
