@@ -73,4 +73,29 @@ static void Movement(Seznami* seznami) {
 			//break;
 		}
 	}
+	for (int i = 0; i < seznami->seznamKljucev.size(); i++) {
+		if (seznami->player.collision(seznami->seznamKljucev[i].getLocation())) {
+			seznami->player.addKey();
+			seznami->seznamKljucev.erase(seznami->seznamKljucev.begin() + i);
+
+			return;
+			//break;
+		}
+	}
+	for (int i = 0; i < seznami->seznamPosasti.size(); i++) {
+		if (seznami->player.collision(seznami->seznamPosasti[i].getLocation())) {
+			seznami->player.combat(seznami->seznamPosasti[i].getAttack());
+			seznami->seznamPosasti[i].combat(seznami->player.getAttack());
+			if (seznami->seznamPosasti[i].isDead()) {
+				seznami->player.addCoins(seznami->seznamPosasti[i].getCoins());
+				seznami->seznamPosasti.erase(seznami->seznamPosasti.begin() + i);
+			}
+			else {
+				seznami->player.moveBack();
+			}
+
+			return;
+			//break;
+		}
+	}
 }

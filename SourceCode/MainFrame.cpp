@@ -14,7 +14,7 @@ wxGauge* healthBar;
 
 MainFrame::MainFrame(const wxString& title) : wxFrame(nullptr, wxID_ANY, title) {
 
-	seznami->player = Hero(80, koordinate(0, 0));
+	seznami->player = Hero(120, 6, 1, koordinate(0, 0));
 	seznami->seznamZidov.push_back(Wall(koordinate(3, 0)));
 	seznami->seznamZidov.push_back(Wall(koordinate(3, 1)));
 	seznami->seznamVrat.push_back(Door(koordinate(0, 4)));
@@ -28,9 +28,12 @@ MainFrame::MainFrame(const wxString& title) : wxFrame(nullptr, wxID_ANY, title) 
 	seznami->seznamKovancev.push_back(Coin(1, koordinate(1, 0)));
 	seznami->seznamKovancev.push_back(Coin(5, koordinate(2, 0)));
 	seznami->seznamKljucev.push_back(Key(koordinate(0, 1)));
+	seznami->seznamPosasti.push_back(Monster(20, 4, 0, 2, koordinate(9, 6)));
+	seznami->seznamPosasti.push_back(Monster(20, 4, 0, 2, koordinate(9, 5)));
+	seznami->seznamPosasti.push_back(Monster(20, 4, 0, 2, koordinate(1, 1)));
 	seznami->makeBackup();
 	Movement(seznami);
-
+	
 
 	wxPanel* panel = new wxPanel(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxWANTS_CHARS);
 
@@ -200,6 +203,12 @@ void MainFrame::OnPaint(wxPaintEvent& evt) {
 	for (int i = 0; i < seznami->seznamKljucev.size(); i++) {
 		wxPoint wallPoint(seznami->seznamKljucev[i].getLocation().x, seznami->seznamKljucev[i].getLocation().y);
 		dc.DrawRectangle(wxPoint(300, 0) + wallPoint * tileSize + wxPoint(tileSize, tileSize) / 4, wxSize(tileSize, tileSize) / 2);
+	}
+
+	dc.SetBrush(wxBrush(wxColour(0, 0, 0), wxBRUSHSTYLE_SOLID)); // Monster
+	for (int i = 0; i < seznami->seznamPosasti.size(); i++) {
+		wxPoint monsterPoint(seznami->seznamPosasti[i].getLocation().x, seznami->seznamPosasti[i].getLocation().y);
+		dc.DrawRectangle(wxPoint(300, 0) + monsterPoint * tileSize + wxPoint(tileSize, tileSize) / 4, wxSize(tileSize, tileSize) / 2);
 	}
 
 	dc.SetBrush(wxBrush(wxColour(153, 0, 102), wxBRUSHSTYLE_SOLID)); // Hero

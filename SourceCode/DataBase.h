@@ -105,7 +105,7 @@ public:
 	}
 };
 
-class Door { /////////////////////
+class Door {
 
 private:
 	bool exist;
@@ -244,15 +244,15 @@ public:
 class Hero {
 
 private:
-	int hHp, maxHHp, attack, defence; ///////////////////// attack, defence
+	int hHp, maxHHp, attack, defence;
 	int coins, keys;
 	koordinate point, pastPoint;
 
 public:
-	Hero() : hHp(100), maxHHp(hHp), coins(0), keys(0), point(koordinate()), pastPoint(point) {}
-	Hero(int hp) : hHp(hp), maxHHp(hHp), coins(0), keys(0), point(koordinate()), pastPoint(point) {}
-	Hero(int hp, koordinate xy) : hHp(hp), maxHHp(hHp), coins(0), keys(0), point(xy), pastPoint(point) {}
-	Hero(int hp, int coinsAmouth, int keysAmouth, koordinate xy) : hHp(hp), maxHHp(hHp), coins(coinsAmouth), keys(keysAmouth), point(xy), pastPoint(point) {}
+	Hero() : hHp(100), maxHHp(hHp), attack(6), defence(1), coins(0), keys(0), point(koordinate()), pastPoint(point) {}
+	Hero(int hp) : hHp(hp), maxHHp(hHp), attack(6), defence(1), coins(0), keys(0), point(koordinate()), pastPoint(point) {}
+	Hero(int hp, int initAttack, int initDefence, koordinate xy) : hHp(hp), maxHHp(hHp), attack(initAttack), defence(initDefence), coins(0), keys(0), point(xy), pastPoint(point) {}
+	Hero(int hp, int initAttack, int initDefence, int coinsAmouth, int keysAmouth, koordinate xy) : hHp(hp), maxHHp(hHp), attack(initAttack), defence(initDefence), coins(coinsAmouth), keys(keysAmouth), point(xy), pastPoint(point) {}
 
 	int getHp() const {
 		return hHp;
@@ -260,14 +260,20 @@ public:
 	int getMaxHp() const {
 		return maxHHp;
 	}
-	koordinate getLocation() const {
-		return point;
+	int getAttack() const{
+		return attack;
+	}
+	int getDefence() const {
+		return defence;
 	}
 	int getCoins() const {
 		return coins;
 	}
 	int getKeys() const {
 		return keys;
+	}
+	koordinate getLocation() const {
+		return point;
 	}
 
 	void heal(unsigned int amount) {
@@ -279,6 +285,12 @@ public:
 	}
 	void takeDamage(unsigned int amount) {
 		hHp -= amount;
+		if (hHp < 0) hHp = 0;
+	}
+	void combat(int incomingAttack) {
+		int damage = incomingAttack - defence;
+		if (damage < 1) hHp--;
+		else hHp -= damage;
 		if (hHp < 0) hHp = 0;
 	}
 	void addCoins(int value) {
@@ -344,7 +356,7 @@ public:
 	}
 };
 
-class Monster { ////////////////// dodat v seznam
+class Monster {
 
 private:
 	int hp, maxHp, attack, defence;
@@ -352,7 +364,37 @@ private:
 	koordinate point;
 
 public:
+	Monster(int hp, koordinate xy) : hp(hp), maxHp(hp), attack(4), defence(0), coins(1), point(xy) {}
+	Monster(int hp, int attack, int defence, int coins, koordinate xy) : hp(hp), maxHp(hp), attack(attack), defence(defence), coins(coins), point(xy) {}
 
+	int getHp() const {
+		return hp;
+	}
+	int getMaxHp() const {
+		return maxHp;
+	}
+	int getAttack() const {
+		return attack;
+	}
+	int getDefence() const {
+		return defence;
+	}
+	int getCoins() const {
+		return coins;
+	}
+	koordinate getLocation() const {
+		return point;
+	}
+
+	void combat(int incomingAttack) {
+		int damage = incomingAttack - defence;
+		if (damage < 1) hp--;
+		else hp -= damage;
+		if (hp < 0) hp = 0;
+	}
+	bool isDead() const {
+		return hp <= 0;
+	}
 };
 
 
@@ -368,6 +410,7 @@ private:
 	std::vector<Bandage> seznamZdravilBackup;
 	std::vector<Coin> seznamKovancevBackup;
 	std::vector<Key> seznamKljucevBackup;
+	std::vector<Monster> seznamPosastiBackup;
 
 public:
 	Hero player;
@@ -378,6 +421,7 @@ public:
 	std::vector<Bandage> seznamZdravil;
 	std::vector<Coin> seznamKovancev;
 	std::vector<Key> seznamKljucev;
+	std::vector<Monster> seznamPosasti;
 
 	void makeBackup() {
 		playerBackup = player;
@@ -388,6 +432,7 @@ public:
 		seznamZdravilBackup = seznamZdravil;
 		seznamKovancevBackup = seznamKovancev;
 		seznamKljucevBackup = seznamKljucev;
+		seznamPosastiBackup = seznamPosasti;
 	}
 
 	void restore() {
@@ -399,5 +444,6 @@ public:
 		seznamZdravil = seznamZdravilBackup;
 		seznamKovancev = seznamKovancevBackup;
 		seznamKljucev = seznamKljucevBackup;
+		seznamPosasti = seznamPosastiBackup;
 	}
 };
