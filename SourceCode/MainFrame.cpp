@@ -1,6 +1,7 @@
 #include "MainFrame.h"
 #include "Simulation.cpp"
 #include <wx/wx.h>
+#include <fstream>
 
 
 
@@ -10,7 +11,6 @@ wxSlider* slider;
 wxSlider* sliderX;
 wxSlider* sliderY;
 wxGauge* healthBar;
-
 
 MainFrame::MainFrame(const wxString& title) : wxFrame(nullptr, wxID_ANY, title) {
 
@@ -46,6 +46,8 @@ MainFrame::MainFrame(const wxString& title) : wxFrame(nullptr, wxID_ANY, title) 
 	wxButton* down = new wxButton(panel, wxID_ANY, "Down", wxPoint(100, 200 + razdalja), wxSize(velikost, velikost));
 	wxButton* left = new wxButton(panel, wxID_ANY, "Left", wxPoint(100 - razdalja, 200 + razdalja / 2), wxSize(velikost, velikost));
 	wxButton* reset = new wxButton(panel, wxID_ANY, "Reset", wxPoint(100 + 2 * razdalja + 6, 200), wxSize(velikost * 2 / 3, velikost * 2 / 3));
+	wxButton* save = new wxButton(panel, wxID_ANY, "Save", wxPoint(100 + 2 * razdalja + 6, 200 + velikost * 2 / 3 + 2), wxSize(velikost * 2 / 3, velikost * 2 / 3));
+	wxButton* load = new wxButton(panel, wxID_ANY, "Load", wxPoint(100 + 2 * razdalja + 6, 200 + 2* (velikost * 2 / 3 + 2)), wxSize(velikost * 2 / 3, velikost * 2 / 3));
 
 	slider = new wxSlider(panel, wxID_ANY, 0, 0, 100, wxPoint(100, 100), wxDefaultSize, wxSL_LABELS);
 	sliderX = new wxSlider(panel, wxID_ANY, seznami->player.getLocation().x, 0, 10, wxPoint(85, 350), wxDefaultSize, wxSL_LABELS);
@@ -55,15 +57,24 @@ MainFrame::MainFrame(const wxString& title) : wxFrame(nullptr, wxID_ANY, title) 
 	healthBar->SetValue(seznami->player.getHp());
 
 
+	/*wxPNGHandler* handler = new wxPNGHandler;
+	wxImage::AddHandler(handler);
+	wxStaticBitmap* image;
+	image = new wxStaticBitmap(panel, wxID_ANY, wxBitmap("C:\Users\Marko\Documents\Imag.png", wxBITMAP_TYPE_PNG), wxPoint(50, 100), wxSize(100, 500));*/
+
+
 	test->Bind(wxEVT_BUTTON, &MainFrame::OnTestClicked, this);
 	up->Bind(wxEVT_BUTTON, &MainFrame::OnUpClicked, this);
 	right->Bind(wxEVT_BUTTON, &MainFrame::OnRightClicked, this);
 	down->Bind(wxEVT_BUTTON, &MainFrame::OnDownClicked, this);
 	left->Bind(wxEVT_BUTTON, &MainFrame::OnLeftClicked, this);
 	reset->Bind(wxEVT_BUTTON, &MainFrame::OnResetClicked, this);
+	save->Bind(wxEVT_BUTTON, &MainFrame::OnSaveClicked, this);
+	load->Bind(wxEVT_BUTTON, &MainFrame::OnLoadClicked, this);
 
 	panel->Connect(wxEVT_PAINT, wxPaintEventHandler(MainFrame::OnPaint));
 
+	wxStatusBar* statusBar = CreateStatusBar();
 	panel->SetDoubleBuffered(true);
 }
 
@@ -130,6 +141,98 @@ void MainFrame::OnResetClicked(wxCommandEvent& evt) {
 	sliderY->SetValue(seznami->player.getLocation().y);
 	healthBar->SetValue(seznami->player.getHp());
 
+	Refresh();
+}
+
+void MainFrame::OnSaveClicked(wxCommandEvent& evt) { ////////////////// kodo v svoj class oz. funkcijo
+
+	std::string ime = __DATE__;
+	wxFileDialog* fileDialog = new wxFileDialog(this, "Shrani", wxEmptyString, "Igra " + ime, "Text files (*.txt)|*.txt", wxFD_SAVE);
+
+	if (fileDialog->ShowModal() == wxID_OK) {
+
+		std::string pot = static_cast<std::string>(fileDialog->GetPath());
+
+		std::ofstream shrani;
+		shrani.open(pot, std::ios::out);
+
+		if (shrani.is_open()) {
+
+			shrani << "IgraV0.1" << std::endl;
+			shrani << __DATE__ << ", " << __TIME__ << std::endl << std::endl;
+
+			shrani << "Hero: ";
+			shrani << 1 << std::endl;
+			shrani << seznami->player.getHp() << ", ";
+			shrani << seznami->player.getMaxHp() << ", ";
+			shrani << seznami->player.getAttack() << ", ";
+			shrani << seznami->player.getDefence() << ", ";
+			shrani << seznami->player.getCoins() << ", ";
+			shrani << seznami->player.getKeys() << ", ";
+			shrani << seznami->player.getLocation() << ", " << std::endl;
+			shrani << std::endl;
+
+			shrani << "Wall: ";
+			shrani << seznami->seznamZidov.size() << std::endl;
+			for (int i = 0; i < seznami->seznamZidov.size(); i++) {
+				shrani << seznami->seznamZidov[i].getExist() << ", ";
+				shrani << seznami->seznamZidov[i].getLocation() << ", " << std::endl;
+			}
+			shrani << std::endl;
+		}
+	}
+}
+
+void MainFrame::OnLoadClicked(wxCommandEvent& evt) { ////////////////// kodo v svoj class oz. funkcijo
+
+	wxFileDialog* fileDialog = new wxFileDialog(this, "Odpri datoteko", wxEmptyString, wxEmptyString, wxFileSelectorDefaultWildcardStr, wxFD_OPEN);
+
+	if (fileDialog->ShowModal() == wxID_OK) {
+
+		std::string pot = static_cast<std::string>(fileDialog->GetPath());
+
+		std::ifstream nalozi;
+		nalozi.open(pot, std::ios::in);
+
+		if (nalozi.is_open()) {
+
+			seznami->clear();
+
+			std::string bes;
+			char c;
+			int st, pon;
+			koordinate xy;
+
+			nalozi >> bes;
+			if (bes != "IgraV0.1") wxLogStatus("Wrong file");
+			nalozi >> bes >> bes >> bes >> bes;
+
+			nalozi >> bes >> pon;
+			if (bes != "Hero:") wxLogStatus("No Hero found");
+			nalozi >> st >> c; seznami->player.setHp(st);
+			nalozi >> st >> c; seznami->player.setMaxHp(st);
+			nalozi >> st >> c; seznami->player.setAttack(st);
+			nalozi >> st >> c; seznami->player.setDefence(st);
+			nalozi >> st >> c; seznami->player.setCoins(st);
+			nalozi >> st >> c; seznami->player.setKeys(st);
+			nalozi >> xy >> c; seznami->player.setLocation(xy);
+
+
+			nalozi >> bes >> pon;
+			if (bes != "Wall:") wxLogStatus("No Wall found");
+			for (int i = 0; i < pon; i++) {
+				seznami->seznamZidov.push_back(Wall());
+				nalozi >> st >> c; seznami->seznamZidov[i].setExist(st);
+				nalozi >> xy >> c; seznami->seznamZidov[i].setLocation(xy);
+			}
+
+
+
+
+			seznami->makeBackup();
+		}
+	}
+	Movement(seznami);
 	Refresh();
 }
 
@@ -218,4 +321,7 @@ void MainFrame::OnPaint(wxPaintEvent& evt) {
 
 	//- Izpis vrednosti
 	//////////////////////
+
+
+
 }

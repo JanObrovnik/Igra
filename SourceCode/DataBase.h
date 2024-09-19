@@ -22,6 +22,7 @@ public:
 
 
 std::ostream& operator<<(std::ostream& os, const koordinate& ko);
+std::istream& operator>>(std::istream& is, koordinate& ko);
 
 
 inline bool operator==(const koordinate& ko1, const koordinate& ko2) {
@@ -74,7 +75,9 @@ inline koordinate operator/(const koordinate& ko1, const int dod) {
 }
 
 
-
+/// <summary>
+/// dokoncat vse 'set____()'
+/// </summary>
 class Wall {
 
 private:
@@ -91,6 +94,13 @@ public:
 	}
 	koordinate getLocation() const {
 		return point;
+	}
+
+	void setExist(bool ex) {
+		exist = ex;
+	}
+	void setLocation(koordinate xy) {
+		point = xy;
 	}
 
 	void effect() {
@@ -276,6 +286,28 @@ public:
 		return point;
 	}
 
+	void setHp(int hp) {
+		hHp = hp;
+	}
+	void setMaxHp(int maxHp) {
+		maxHHp = maxHp;
+	}
+	void setAttack(int attackValue) {
+		attack = attackValue;
+	}
+	void setDefence(int defenceValue) {
+		defence = defenceValue;
+	}
+	void setCoins(int coinsAmount) {
+		coins = coinsAmount;
+	}
+	void setKeys(int keysAmount) {
+		keys = keysAmount;
+	}
+	void setLocation(koordinate xy) {
+		point = xy;
+	}
+
 	void heal(unsigned int amount) {
 		hHp += amount;
 		if (hHp > maxHHp) hHp = maxHHp;
@@ -445,5 +477,25 @@ public:
 		seznamKovancev = seznamKovancevBackup;
 		seznamKljucev = seznamKljucevBackup;
 		seznamPosasti = seznamPosastiBackup;
+	}
+
+	void clear() {
+		//player = Hero();
+		seznamZidov.clear();
+		seznamZidovBackup.clear();
+		seznamVrat.clear();
+		seznamVratBackup.clear();
+		seznamPortalov.clear();
+		seznamPortalovBackup.clear();
+		seznamPasti.clear();
+		seznamPastiBackup.clear();
+		seznamZdravil.clear();
+		seznamZdravilBackup.clear();
+		seznamKovancev.clear();
+		seznamKovancevBackup.clear();
+		seznamKljucev.clear();
+		seznamKljucevBackup.clear();
+		seznamPosasti.clear();
+		seznamPosastiBackup.clear();
 	}
 };

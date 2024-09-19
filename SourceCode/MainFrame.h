@@ -14,4 +14,6 @@ private:
 	void OnDownClicked(wxCommandEvent& evt);
 	void OnLeftClicked(wxCommandEvent& evt);
 	void OnResetClicked(wxCommandEvent& evt);
+	void OnSaveClicked(wxCommandEvent& evt);
+	void OnLoadClicked(wxCommandEvent& evt);
 };
