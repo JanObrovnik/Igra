@@ -1,11 +1,12 @@
 #include "MainFrame.h"
-#include "Simulation.cpp"
+#include "DataBase.h"
 #include <wx/wx.h>
 #include <fstream>
 
 
 
 Seznami* seznami = new Seznami;
+//WorkArea* workArea = new WorkArea;
 
 wxSlider* slider;
 wxSlider* sliderX;
@@ -179,6 +180,66 @@ void MainFrame::OnSaveClicked(wxCommandEvent& evt) { ////////////////// kodo v s
 				shrani << seznami->seznamZidov[i].getLocation() << ", " << std::endl;
 			}
 			shrani << std::endl;
+
+			shrani << "Door: ";
+			shrani << seznami->seznamVrat.size() << std::endl;
+			for (int i = 0; i < seznami->seznamVrat.size(); i++) {
+				shrani << seznami->seznamVrat[i].getLocked() << ", ";
+				shrani << seznami->seznamVrat[i].getLocation() << ", " << std::endl;
+			}
+			shrani << std::endl;
+
+			shrani << "Portal: ";
+			shrani << seznami->seznamPortalov.size() << std::endl;
+			for (int i = 0; i < seznami->seznamPortalov.size(); i++) {
+				shrani << seznami->seznamPortalov[i].getExist() << ", ";
+				shrani << seznami->seznamPortalov[i].getLocation0() << ", ";
+				shrani << seznami->seznamPortalov[i].getLocation1() << ", " << std::endl;
+			}
+			shrani << std::endl;
+
+			shrani << "Trap: ";
+			shrani << seznami->seznamPasti.size() << std::endl;
+			for (int i = 0; i < seznami->seznamPasti.size(); i++) {
+				shrani << seznami->seznamPasti[i].getHardness() << ", ";
+				shrani << seznami->seznamPasti[i].getLocation() << ", " << std::endl;
+			}
+			shrani << std::endl;
+
+			shrani << "Bandage: ";
+			shrani << seznami->seznamZdravil.size() << std::endl;
+			for (int i = 0; i < seznami->seznamZdravil.size(); i++) {
+				shrani << seznami->seznamZdravil[i].getHeal() << ", ";
+				shrani << seznami->seznamZdravil[i].getLocation() << ", " << std::endl;
+			}
+			shrani << std::endl;
+
+			shrani << "Coin: ";
+			shrani << seznami->seznamKovancev.size() << std::endl;
+			for (int i = 0; i < seznami->seznamKovancev.size(); i++) {
+				shrani << seznami->seznamKovancev[i].getValue() << ", ";
+				shrani << seznami->seznamKovancev[i].getLocation() << ", " << std::endl;
+			}
+			shrani << std::endl;
+
+			shrani << "Key: ";
+			shrani << seznami->seznamKljucev.size() << std::endl;
+			for (int i = 0; i < seznami->seznamKljucev.size(); i++) {
+				shrani << seznami->seznamKljucev[i].getLocation() << ", " << std::endl;
+			}
+			shrani << std::endl;
+
+			shrani << "Monster: ";
+			shrani << seznami->seznamPosasti.size() << std::endl;
+			for (int i = 0; i < seznami->seznamPosasti.size(); i++) {
+				shrani << seznami->seznamPosasti[i].getHp() << ", ";
+				shrani << seznami->seznamPosasti[i].getMaxHp() << ", ";
+				shrani << seznami->seznamPosasti[i].getAttack() << ", ";
+				shrani << seznami->seznamPosasti[i].getDefence() << ", ";
+				shrani << seznami->seznamPosasti[i].getCoins() << ", ";
+				shrani << seznami->seznamPosasti[i].getLocation() << ", " << std::endl;
+			}
+			shrani << std::endl;
 		}
 	}
 }
@@ -217,7 +278,6 @@ void MainFrame::OnLoadClicked(wxCommandEvent& evt) { ////////////////// kodo v s
 			nalozi >> st >> c; seznami->player.setKeys(st);
 			nalozi >> xy >> c; seznami->player.setLocation(xy);
 
-
 			nalozi >> bes >> pon;
 			if (bes != "Wall:") wxLogStatus("No Wall found");
 			for (int i = 0; i < pon; i++) {
@@ -226,8 +286,65 @@ void MainFrame::OnLoadClicked(wxCommandEvent& evt) { ////////////////// kodo v s
 				nalozi >> xy >> c; seznami->seznamZidov[i].setLocation(xy);
 			}
 
+			nalozi >> bes >> pon;
+			if (bes != "Door:") wxLogStatus("No Door found");
+			for (int i = 0; i < pon; i++) {
+				seznami->seznamVrat.push_back(Door());
+				nalozi >> st >> c; seznami->seznamVrat[i].setLocked(st);
+				nalozi >> xy >> c; seznami->seznamVrat[i].setLocation(xy);
+			}
 
+			nalozi >> bes >> pon;
+			if (bes != "Portal:") wxLogStatus("No Portal found");
+			for (int i = 0; i < pon; i++) {
+				seznami->seznamPortalov.push_back(Portal());
+				nalozi >> st >> c; seznami->seznamPortalov[i].setExist(st);
+				nalozi >> xy >> c; seznami->seznamPortalov[i].setLocation0(xy);
+				nalozi >> xy >> c; seznami->seznamPortalov[i].setLocation1(xy);
+			}
 
+			nalozi >> bes >> pon;
+			if (bes != "Trap:") wxLogStatus("No Trap found");
+			for (int i = 0; i < pon; i++) {
+				seznami->seznamPasti.push_back(Trap());
+				nalozi >> st >> c; seznami->seznamPasti[i].setHardness(st);
+				nalozi >> xy >> c; seznami->seznamPasti[i].setLocation(xy);
+			}
+
+			nalozi >> bes >> pon;
+			if (bes != "Bandage:") wxLogStatus("No Bandage found");
+			for (int i = 0; i < pon; i++) {
+				seznami->seznamZdravil.push_back(Bandage());
+				nalozi >> st >> c; seznami->seznamZdravil[i].setHeal(st);
+				nalozi >> xy >> c; seznami->seznamZdravil[i].setLocation(xy);
+			}
+
+			nalozi >> bes >> pon;
+			if (bes != "Coin:") wxLogStatus("No Coin found");
+			for (int i = 0; i < pon; i++) {
+				seznami->seznamKovancev.push_back(Coin());
+				nalozi >> st >> c; seznami->seznamKovancev[i].setValue(st);
+				nalozi >> xy >> c; seznami->seznamKovancev[i].setLocation(xy);
+			}
+
+			nalozi >> bes >> pon;
+			if (bes != "Key:") wxLogStatus("No Key found");
+			for (int i = 0; i < pon; i++) {
+				seznami->seznamKljucev.push_back(Key());
+				nalozi >> xy >> c; seznami->seznamKljucev[i].setLocation(xy);
+			}
+
+			nalozi >> bes >> pon;
+			if (bes != "Monster:") wxLogStatus("No Monster found");
+			for (int i = 0; i < pon; i++) {
+				seznami->seznamPosasti.push_back(Monster());
+				nalozi >> st >> c; seznami->seznamPosasti[i].setHp(st);
+				nalozi >> st >> c; seznami->seznamPosasti[i].setMaxHp(st);
+				nalozi >> st >> c; seznami->seznamPosasti[i].setAttack(st);
+				nalozi >> st >> c; seznami->seznamPosasti[i].setDefence(st);
+				nalozi >> st >> c; seznami->seznamPosasti[i].setCoins(st);
+				nalozi >> xy >> c; seznami->seznamPosasti[i].setLocation(xy);
+			}
 
 			seznami->makeBackup();
 		}
@@ -258,7 +375,7 @@ void MainFrame::OnPaint(wxPaintEvent& evt) {
 		dc.DrawLine(wxPoint(300, i * tileSize), wxPoint(300 + area, i * tileSize));
 	}
 
-
+	
 	//- Izris objektov
 	for (int i = 0; i < seznami->seznamZidov.size(); i++) { // Wall
 		if (seznami->seznamZidov[i].getExist()) dc.SetBrush(wxBrush(wxColour(150, 75, 0), wxBRUSHSTYLE_SOLID));
@@ -317,7 +434,7 @@ void MainFrame::OnPaint(wxPaintEvent& evt) {
 	dc.SetBrush(wxBrush(wxColour(153, 0, 102), wxBRUSHSTYLE_SOLID)); // Hero
 	wxPoint playerPoint(seznami->player.getLocation().x, seznami->player.getLocation().y);
 	dc.DrawRectangle(wxPoint(300, 0) + playerPoint * tileSize + wxPoint(tileSize, tileSize) / 4, wxSize(tileSize, tileSize) / 2);
-
+	
 
 	//- Izpis vrednosti
 	//////////////////////

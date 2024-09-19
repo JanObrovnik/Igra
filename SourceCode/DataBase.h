@@ -75,9 +75,7 @@ inline koordinate operator/(const koordinate& ko1, const int dod) {
 }
 
 
-/// <summary>
-/// dokoncat vse 'set____()'
-/// </summary>
+
 class Wall {
 
 private:
@@ -118,29 +116,37 @@ public:
 class Door {
 
 private:
-	bool exist;
+	bool locked;
 	koordinate point;
 
 public:
-	Door(koordinate xy) : exist(true), point(xy) {}
-	Door(bool locked, koordinate xy) : exist(locked), point(xy) {}
+	Door() : locked(false), point(koordinate()) {}
+	Door(koordinate xy) : locked(true), point(xy) {}
+	Door(bool locked, koordinate xy) : locked(locked), point(xy) {}
 
 	bool getLocked() const {
-		return exist;
+		return locked;
 	}
 	koordinate getLocation() const {
 		return point;
 	}
 
+	void setLocked(bool isLocked) {
+		locked = isLocked;
+	}
+	void setLocation(koordinate xy) {
+		point = xy;
+	}
+
 	void effect() {
-		if (exist) unlock();
+		if (locked) unlock();
 		else lock();
 	}
 	void unlock() {
-		exist = false;
+		locked = false;
 	}
 	void lock() {
-		exist = true;
+		locked = true;
 	}
 };
 
@@ -151,6 +157,7 @@ private:
 	koordinate point0, point1;
 
 public:
+	Portal() : exist(false), point0(koordinate()), point1(koordinate()) {}
 	Portal(koordinate xy0, koordinate xy1) : exist(true), point0(xy0), point1(xy1) {}
 	Portal(bool open, koordinate xy0, koordinate xy1) : exist(open), point0(xy0), point1(xy1) {}
 
@@ -162,6 +169,16 @@ public:
 	}
 	koordinate getLocation1() const {
 		return point1;
+	}
+
+	void setExist(bool ex) {
+		exist = ex;
+	}
+	void setLocation0(koordinate xy) {
+		point0 = xy;
+	}
+	void setLocation1(koordinate xy) {
+		point1 = xy;
 	}
 
 	void open() {
@@ -190,6 +207,13 @@ public:
 		return point;
 	}
 
+	void setHardness(unsigned short hardness) {
+		hardnessLevel = hardness;
+	}
+	void setLocation(koordinate xy) {
+		point = xy;
+	}
+
 	void destroy() {
 		hardnessLevel = 0;
 	}
@@ -213,6 +237,13 @@ public:
 		return point;
 	}
 
+	void setHeal(unsigned short heal) {
+		healLevel = heal;
+	}
+	void setLocation(koordinate xy) {
+		point = xy;
+	}
+
 	void destroy() {
 		healLevel = 0;
 	}
@@ -225,6 +256,7 @@ private:
 	koordinate point;
 
 public:
+	Coin() : value(1), point(koordinate()) {}
 	Coin(koordinate xy) : value(1), point(koordinate(xy)) {}
 	Coin(unsigned short value, koordinate xy) : value(value), point(koordinate(xy)) {}
 
@@ -234,6 +266,13 @@ public:
 	koordinate getLocation() const {
 		return point;
 	}
+
+	void setValue(unsigned short valueAmount) {
+		value = valueAmount;
+	}
+	void setLocation(koordinate xy) {
+		point = xy;
+	}
 };
 
 class Key {
@@ -242,10 +281,15 @@ private:
 	koordinate point;
 
 public:
+	Key() : point(koordinate()) {}
 	Key(koordinate xy) : point(xy) {}
 
 	koordinate getLocation() const {
 		return point;
+	}
+
+	void setLocation(koordinate xy) {
+		point = xy;
 	}
 };
 
@@ -254,7 +298,8 @@ public:
 class Hero {
 
 private:
-	int hHp, maxHHp, attack, defence;
+	int hHp, maxHHp;
+	int attack, defence;
 	int coins, keys;
 	koordinate point, pastPoint;
 
@@ -391,19 +436,20 @@ public:
 class Monster {
 
 private:
-	int hp, maxHp, attack, defence;
+	int mHp, maxmHp, attack, defence;
 	int coins;
 	koordinate point;
 
 public:
-	Monster(int hp, koordinate xy) : hp(hp), maxHp(hp), attack(4), defence(0), coins(1), point(xy) {}
-	Monster(int hp, int attack, int defence, int coins, koordinate xy) : hp(hp), maxHp(hp), attack(attack), defence(defence), coins(coins), point(xy) {}
+	Monster() : mHp(20), maxmHp(mHp), attack(4), defence(0), coins(1), point(koordinate()) {}
+	Monster(int hp, koordinate xy) : mHp(hp), maxmHp(mHp), attack(4), defence(0), coins(1), point(xy) {}
+	Monster(int hp, int attack, int defence, int coins, koordinate xy) : mHp(hp), maxmHp(mHp), attack(attack), defence(defence), coins(coins), point(xy) {}
 
 	int getHp() const {
-		return hp;
+		return mHp;
 	}
 	int getMaxHp() const {
-		return maxHp;
+		return maxmHp;
 	}
 	int getAttack() const {
 		return attack;
@@ -418,18 +464,44 @@ public:
 		return point;
 	}
 
+	void setHp(int hp) {
+		mHp = hp;
+	}
+	void setMaxHp(int maxHp) {
+		maxmHp = maxHp;
+	}
+	void setAttack(int attackValue) {
+		attack = attackValue;
+	}
+	void setDefence(int defenceValue) {
+		defence = defenceValue;
+	}
+	void setCoins(int coinsAmount) {
+		coins = coinsAmount;
+	}
+	void setLocation(koordinate xy) {
+		point = xy;
+	}
+
 	void combat(int incomingAttack) {
 		int damage = incomingAttack - defence;
-		if (damage < 1) hp--;
-		else hp -= damage;
-		if (hp < 0) hp = 0;
+		if (damage < 1) mHp--;
+		else mHp -= damage;
+		if (mHp < 0) mHp = 0;
 	}
 	bool isDead() const {
-		return hp <= 0;
+		return mHp <= 0;
 	}
 };
 
 
+
+struct WorkArea {
+	int minX = 0;
+	int maxX = 9;
+	int minY = 0;
+	int maxY = 9;
+};
 
 struct Seznami {
 
@@ -454,6 +526,7 @@ public:
 	std::vector<Coin> seznamKovancev;
 	std::vector<Key> seznamKljucev;
 	std::vector<Monster> seznamPosasti;
+	WorkArea workArea;
 
 	void makeBackup() {
 		playerBackup = player;
@@ -480,7 +553,7 @@ public:
 	}
 
 	void clear() {
-		//player = Hero();
+		player = Hero();
 		seznamZidov.clear();
 		seznamZidovBackup.clear();
 		seznamVrat.clear();
@@ -499,3 +572,9 @@ public:
 		seznamPosastiBackup.clear();
 	}
 };
+
+
+
+void Movement(Seznami* seznami);
+
+bool IllegalMove(Seznami* seznami);
