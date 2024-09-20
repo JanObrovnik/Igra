@@ -243,8 +243,53 @@ void MainFrame::OnPaint(wxPaintEvent& evt) {
 	
 
 	//- Izpis vrednosti
-	//////////////////////
+	wxPoint statusPoint(50, 500);
+	//wxPen maxHealthPen() ///////////// to
+	//wxBrush maxHealthBrush()
+	//wxPen healthPen()
+	//wxBrush healthBrush()
+
+	wxSize maxHealthBar(seznami->player.getMaxHp(), 15);
+	wxSize healthBar(seznami->player.getHp(), 15);
 
 
+	if (seznami->player.getMaxHp() > 200) maxHealthBar.x = 200;
 
+	if (seznami->player.getHp() > 400) {
+
+		healthBar.x -= 400;
+
+		dc.SetPen(wxPen(wxColour(246, 114, 0), 1, wxPENSTYLE_SOLID)); /////////////// tukaj
+		dc.SetBrush(wxBrush(wxColour(246, 114, 0), wxBRUSHSTYLE_SOLID));
+		dc.DrawRectangle(statusPoint + wxPoint(0, 0), maxHealthBar); ///////////// posebi
+
+		dc.SetPen(wxPen(wxColour(254, 223, 0), 1, wxPENSTYLE_SOLID));
+		dc.SetBrush(wxBrush(wxColour(254, 223, 0), wxBRUSHSTYLE_SOLID));
+		dc.DrawRectangle(statusPoint + wxPoint(0, 0), healthBar);
+	}
+	else if (seznami->player.getHp() > 200) {
+		
+		healthBar.x -= 200;
+
+		dc.SetPen(wxPen(wxColour(204, 0, 0), 1, wxPENSTYLE_SOLID)); /////////////// tukaj
+		dc.SetBrush(wxBrush(wxColour(204, 0, 0), wxBRUSHSTYLE_SOLID));
+		dc.DrawRectangle(statusPoint + wxPoint(0, 0), maxHealthBar); ///////////// posebi
+
+		dc.SetPen(wxPen(wxColour(246, 114, 0), 1, wxPENSTYLE_SOLID));
+		dc.SetBrush(wxBrush(wxColour(246, 114, 0), wxBRUSHSTYLE_SOLID));
+		dc.DrawRectangle(statusPoint + wxPoint(0, 0), healthBar);
+	}
+	else {
+
+		dc.SetPen(wxPen(wxColour(0, 0, 0), 1, wxPENSTYLE_SOLID));
+		dc.SetBrush(wxBrush(wxColour(0, 0, 0), wxBRUSHSTYLE_SOLID));
+		dc.DrawRectangle(statusPoint + wxPoint(0, 0), maxHealthBar);
+
+		dc.SetPen(wxPen(wxColour(204, 0, 0), 1, wxPENSTYLE_SOLID));
+		dc.SetBrush(wxBrush(wxColour(204, 0, 0), wxBRUSHSTYLE_SOLID));
+		dc.DrawRectangle(statusPoint + wxPoint(0, 0), healthBar);
+	}
+
+	dc.DrawText(wxString::Format("Coins: %d", seznami->player.getCoins()), statusPoint + wxPoint(0, 25));
+	dc.DrawText(wxString::Format("Keys: %d", seznami->player.getKeys()), statusPoint + wxPoint(0, 45)); ///////////// Keys se resetirajo na prestopu iz levelov
 }

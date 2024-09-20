@@ -22,7 +22,7 @@ void LevelRooms(Seznami* seznami) {
 	switch (seznami->level) {
 	
 	case 0:
-		seznami->player = Hero(120, 6, 1, koordinate(0, 0));
+		seznami->player = Hero(420, 6, 1, koordinate(0, 0));
 		seznami->seznamZidov.push_back(Wall(koordinate(3, 0)));
 		seznami->seznamZidov.push_back(Wall(koordinate(3, 1)));
 		seznami->seznamVrat.push_back(Door(koordinate(0, 4)));
@@ -31,8 +31,8 @@ void LevelRooms(Seznami* seznami) {
 		seznami->seznamPasti.push_back(Trap(20, koordinate(1, 2)));
 		seznami->seznamPasti.push_back(Trap(20, koordinate(2, 2)));
 		seznami->seznamPasti.push_back(Trap(20, koordinate(3, 2)));
-		seznami->seznamPasti.push_back(Trap(20, koordinate(6, 9)));
-		seznami->seznamZdravil.push_back(Bandage(5, koordinate(3, 3)));
+		seznami->seznamPasti.push_back(Trap(200, koordinate(6, 9)));
+		seznami->seznamZdravil.push_back(Bandage(50, koordinate(3, 3)));
 		seznami->seznamKovancev.push_back(Coin(1, koordinate(1, 0)));
 		seznami->seznamKovancev.push_back(Coin(5, koordinate(2, 0)));
 		seznami->seznamKljucev.push_back(Key(koordinate(0, 1)));
