@@ -1,6 +1,8 @@
 #pragma once
+#include <wx/wx.h>
 #include <iostream>
 #include <vector>
+#include <fstream>
 
 
 class koordinate {
@@ -576,5 +578,7 @@ public:
 
 
 void Movement(Seznami* seznami);
-
 bool IllegalMove(Seznami* seznami);
+
+void Shrani(Seznami* seznami, std::string pot);
+void Nalozi(Seznami* seznami, std::string pot);

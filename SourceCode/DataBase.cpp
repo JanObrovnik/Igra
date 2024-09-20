@@ -124,3 +124,195 @@ bool IllegalMove(Seznami* seznami) {
 		   seznami->player.getLocation().y < seznami->workArea.minY ||
 		   seznami->player.getLocation().y > seznami->workArea.maxY;
 }
+
+
+void Shrani(Seznami* seznami, std::string pot) {
+
+	std::ofstream shrani;
+	shrani.open(pot, std::ios::out);
+
+	if (shrani.is_open()) {
+
+		shrani << "IgraV0.1" << std::endl;
+		shrani << __DATE__ << ", " << __TIME__ << std::endl << std::endl;
+
+		shrani << "Hero: ";
+		shrani << 1 << std::endl;
+		shrani << seznami->player.getHp() << ", ";
+		shrani << seznami->player.getMaxHp() << ", ";
+		shrani << seznami->player.getAttack() << ", ";
+		shrani << seznami->player.getDefence() << ", ";
+		shrani << seznami->player.getCoins() << ", ";
+		shrani << seznami->player.getKeys() << ", ";
+		shrani << seznami->player.getLocation() << ", " << std::endl;
+		shrani << std::endl;
+
+		shrani << "Wall: ";
+		shrani << seznami->seznamZidov.size() << std::endl;
+		for (int i = 0; i < seznami->seznamZidov.size(); i++) {
+			shrani << seznami->seznamZidov[i].getExist() << ", ";
+			shrani << seznami->seznamZidov[i].getLocation() << ", " << std::endl;
+		}
+		shrani << std::endl;
+
+		shrani << "Door: ";
+		shrani << seznami->seznamVrat.size() << std::endl;
+		for (int i = 0; i < seznami->seznamVrat.size(); i++) {
+			shrani << seznami->seznamVrat[i].getLocked() << ", ";
+			shrani << seznami->seznamVrat[i].getLocation() << ", " << std::endl;
+		}
+		shrani << std::endl;
+
+		shrani << "Portal: ";
+		shrani << seznami->seznamPortalov.size() << std::endl;
+		for (int i = 0; i < seznami->seznamPortalov.size(); i++) {
+			shrani << seznami->seznamPortalov[i].getExist() << ", ";
+			shrani << seznami->seznamPortalov[i].getLocation0() << ", ";
+			shrani << seznami->seznamPortalov[i].getLocation1() << ", " << std::endl;
+		}
+		shrani << std::endl;
+
+		shrani << "Trap: ";
+		shrani << seznami->seznamPasti.size() << std::endl;
+		for (int i = 0; i < seznami->seznamPasti.size(); i++) {
+			shrani << seznami->seznamPasti[i].getHardness() << ", ";
+			shrani << seznami->seznamPasti[i].getLocation() << ", " << std::endl;
+		}
+		shrani << std::endl;
+
+		shrani << "Bandage: ";
+		shrani << seznami->seznamZdravil.size() << std::endl;
+		for (int i = 0; i < seznami->seznamZdravil.size(); i++) {
+			shrani << seznami->seznamZdravil[i].getHeal() << ", ";
+			shrani << seznami->seznamZdravil[i].getLocation() << ", " << std::endl;
+		}
+		shrani << std::endl;
+
+		shrani << "Coin: ";
+		shrani << seznami->seznamKovancev.size() << std::endl;
+		for (int i = 0; i < seznami->seznamKovancev.size(); i++) {
+			shrani << seznami->seznamKovancev[i].getValue() << ", ";
+			shrani << seznami->seznamKovancev[i].getLocation() << ", " << std::endl;
+		}
+		shrani << std::endl;
+
+		shrani << "Key: ";
+		shrani << seznami->seznamKljucev.size() << std::endl;
+		for (int i = 0; i < seznami->seznamKljucev.size(); i++) {
+			shrani << seznami->seznamKljucev[i].getLocation() << ", " << std::endl;
+		}
+		shrani << std::endl;
+
+		shrani << "Monster: ";
+		shrani << seznami->seznamPosasti.size() << std::endl;
+		for (int i = 0; i < seznami->seznamPosasti.size(); i++) {
+			shrani << seznami->seznamPosasti[i].getHp() << ", ";
+			shrani << seznami->seznamPosasti[i].getMaxHp() << ", ";
+			shrani << seznami->seznamPosasti[i].getAttack() << ", ";
+			shrani << seznami->seznamPosasti[i].getDefence() << ", ";
+			shrani << seznami->seznamPosasti[i].getCoins() << ", ";
+			shrani << seznami->seznamPosasti[i].getLocation() << ", " << std::endl;
+		}
+		shrani << std::endl;
+	}
+}
+
+void Nalozi(Seznami* seznami, std::string pot) {
+
+	std::ifstream nalozi;
+	nalozi.open(pot, std::ios::in);
+
+	if (nalozi.is_open()) {
+
+		seznami->clear();
+
+		std::string bes;
+		char c;
+		int st, pon;
+		koordinate xy;
+
+		nalozi >> bes;
+		if (bes != "IgraV0.1") wxLogStatus("Wrong file");
+		nalozi >> bes >> bes >> bes >> bes;
+
+		nalozi >> bes >> pon;
+		if (bes != "Hero:") wxLogStatus("No Hero found");
+		nalozi >> st >> c; seznami->player.setHp(st);
+		nalozi >> st >> c; seznami->player.setMaxHp(st);
+		nalozi >> st >> c; seznami->player.setAttack(st);
+		nalozi >> st >> c; seznami->player.setDefence(st);
+		nalozi >> st >> c; seznami->player.setCoins(st);
+		nalozi >> st >> c; seznami->player.setKeys(st);
+		nalozi >> xy >> c; seznami->player.setLocation(xy);
+
+		nalozi >> bes >> pon;
+		if (bes != "Wall:") wxLogStatus("No Wall found");
+		for (int i = 0; i < pon; i++) {
+			seznami->seznamZidov.push_back(Wall());
+			nalozi >> st >> c; seznami->seznamZidov[i].setExist(st);
+			nalozi >> xy >> c; seznami->seznamZidov[i].setLocation(xy);
+		}
+
+		nalozi >> bes >> pon;
+		if (bes != "Door:") wxLogStatus("No Door found");
+		for (int i = 0; i < pon; i++) {
+			seznami->seznamVrat.push_back(Door());
+			nalozi >> st >> c; seznami->seznamVrat[i].setLocked(st);
+			nalozi >> xy >> c; seznami->seznamVrat[i].setLocation(xy);
+		}
+
+		nalozi >> bes >> pon;
+		if (bes != "Portal:") wxLogStatus("No Portal found");
+		for (int i = 0; i < pon; i++) {
+			seznami->seznamPortalov.push_back(Portal());
+			nalozi >> st >> c; seznami->seznamPortalov[i].setExist(st);
+			nalozi >> xy >> c; seznami->seznamPortalov[i].setLocation0(xy);
+			nalozi >> xy >> c; seznami->seznamPortalov[i].setLocation1(xy);
+		}
+
+		nalozi >> bes >> pon;
+		if (bes != "Trap:") wxLogStatus("No Trap found");
+		for (int i = 0; i < pon; i++) {
+			seznami->seznamPasti.push_back(Trap());
+			nalozi >> st >> c; seznami->seznamPasti[i].setHardness(st);
+			nalozi >> xy >> c; seznami->seznamPasti[i].setLocation(xy);
+		}
+
+		nalozi >> bes >> pon;
+		if (bes != "Bandage:") wxLogStatus("No Bandage found");
+		for (int i = 0; i < pon; i++) {
+			seznami->seznamZdravil.push_back(Bandage());
+			nalozi >> st >> c; seznami->seznamZdravil[i].setHeal(st);
+			nalozi >> xy >> c; seznami->seznamZdravil[i].setLocation(xy);
+		}
+
+		nalozi >> bes >> pon;
+		if (bes != "Coin:") wxLogStatus("No Coin found");
+		for (int i = 0; i < pon; i++) {
+			seznami->seznamKovancev.push_back(Coin());
+			nalozi >> st >> c; seznami->seznamKovancev[i].setValue(st);
+			nalozi >> xy >> c; seznami->seznamKovancev[i].setLocation(xy);
+		}
+
+		nalozi >> bes >> pon;
+		if (bes != "Key:") wxLogStatus("No Key found");
+		for (int i = 0; i < pon; i++) {
+			seznami->seznamKljucev.push_back(Key());
+			nalozi >> xy >> c; seznami->seznamKljucev[i].setLocation(xy);
+		}
+
+		nalozi >> bes >> pon;
+		if (bes != "Monster:") wxLogStatus("No Monster found");
+		for (int i = 0; i < pon; i++) {
+			seznami->seznamPosasti.push_back(Monster());
+			nalozi >> st >> c; seznami->seznamPosasti[i].setHp(st);
+			nalozi >> st >> c; seznami->seznamPosasti[i].setMaxHp(st);
+			nalozi >> st >> c; seznami->seznamPosasti[i].setAttack(st);
+			nalozi >> st >> c; seznami->seznamPosasti[i].setDefence(st);
+			nalozi >> st >> c; seznami->seznamPosasti[i].setCoins(st);
+			nalozi >> xy >> c; seznami->seznamPosasti[i].setLocation(xy);
+		}
+
+		seznami->makeBackup();
+	}
+}
