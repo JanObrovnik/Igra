@@ -15,6 +15,65 @@ std::istream& operator>>(std::istream& is, koordinate& ko) {
 
 
 
+void LevelRooms(Seznami* seznami) {
+	
+	seznami->clear();
+
+	switch (seznami->level) {
+	
+	case 0:
+		seznami->player = Hero(120, 6, 1, koordinate(0, 0));
+		seznami->seznamZidov.push_back(Wall(koordinate(3, 0)));
+		seznami->seznamZidov.push_back(Wall(koordinate(3, 1)));
+		seznami->seznamVrat.push_back(Door(koordinate(0, 4)));
+		seznami->seznamPortalov.push_back(Portal(koordinate(4, 0), koordinate(6, 8)));
+		seznami->seznamPasti.push_back(Trap(20, koordinate(0, 2)));
+		seznami->seznamPasti.push_back(Trap(20, koordinate(1, 2)));
+		seznami->seznamPasti.push_back(Trap(20, koordinate(2, 2)));
+		seznami->seznamPasti.push_back(Trap(20, koordinate(3, 2)));
+		seznami->seznamPasti.push_back(Trap(20, koordinate(6, 9)));
+		seznami->seznamZdravil.push_back(Bandage(5, koordinate(3, 3)));
+		seznami->seznamKovancev.push_back(Coin(1, koordinate(1, 0)));
+		seznami->seznamKovancev.push_back(Coin(5, koordinate(2, 0)));
+		seznami->seznamKljucev.push_back(Key(koordinate(0, 1)));
+		seznami->seznamKoncev.push_back(End(koordinate(9, 9)));
+		seznami->seznamPosasti.push_back(Monster(20, 4, 0, 2, koordinate(9, 6)));
+		seznami->seznamPosasti.push_back(Monster(20, 4, 0, 2, koordinate(9, 5)));
+		seznami->seznamPosasti.push_back(Monster(20, 4, 0, 2, koordinate(1, 1)));
+		break;
+	
+	case 1:
+		seznami->player = Hero(120, 6, 1, koordinate(0, 4));
+		seznami->seznamZidov.push_back(Wall(koordinate(0, 2)));
+		seznami->seznamZidov.push_back(Wall(koordinate(1, 2)));
+		seznami->seznamZidov.push_back(Wall(koordinate(2, 2)));
+		seznami->seznamZidov.push_back(Wall(koordinate(3, 2)));
+		seznami->seznamZidov.push_back(Wall(koordinate(3, 3)));
+		seznami->seznamZidov.push_back(Wall(koordinate(3, 5)));
+		seznami->seznamZidov.push_back(Wall(koordinate(3, 6)));
+		seznami->seznamZidov.push_back(Wall(koordinate(2, 6)));
+		seznami->seznamZidov.push_back(Wall(koordinate(1, 6)));
+		seznami->seznamZidov.push_back(Wall(koordinate(0, 6)));
+		seznami->seznamZidov.push_back(Wall(koordinate(2, 0)));
+		seznami->seznamZidov.push_back(Wall(koordinate(2, 1)));
+		seznami->seznamVrat.push_back(Door(koordinate(3, 4)));
+		seznami->seznamPortalov.push_back(Portal(koordinate(0, 0), koordinate(2, 3)));
+		seznami->seznamKovancev.push_back(Coin(5, koordinate(2, 4)));
+		seznami->seznamKljucev.push_back(Key(koordinate(0, 1)));
+		seznami->seznamKoncev.push_back(End(koordinate(9, 0)));
+		seznami->seznamPosasti.push_back(Monster(32, 6, 2, 5, koordinate(4, 4)));
+		break;
+
+	default:
+		break;
+	}
+
+	seznami->makeBackup();
+	Movement(seznami);
+}
+
+
+
 void Movement(Seznami* seznami) {
 
 	if (IllegalMove(seznami)) {
@@ -94,6 +153,15 @@ void Movement(Seznami* seznami) {
 		if (seznami->player.collision(seznami->seznamKljucev[i].getLocation())) {
 			seznami->player.addKey();
 			seznami->seznamKljucev.erase(seznami->seznamKljucev.begin() + i);
+
+			return;
+			//break;
+		}
+	}
+	for (int i = 0; i < seznami->seznamKoncev.size(); i++) {
+		if (seznami->player.collision(seznami->seznamKoncev[i].getLocation())) {
+			seznami->level++;
+			LevelRooms(seznami);
 
 			return;
 			//break;

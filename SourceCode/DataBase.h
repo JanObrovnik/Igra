@@ -295,6 +295,24 @@ public:
 	}
 };
 
+class End {
+
+private:
+	koordinate point;
+
+public:
+	End() : point(koordinate()) {}
+	End(koordinate xy) : point(xy) {}
+
+	koordinate getLocation() const {
+		return point;
+	}
+
+	void setLocation(koordinate xy) {
+		point = xy;
+	}
+};
+
 
 
 class Hero {
@@ -516,6 +534,7 @@ private:
 	std::vector<Bandage> seznamZdravilBackup;
 	std::vector<Coin> seznamKovancevBackup;
 	std::vector<Key> seznamKljucevBackup;
+	std::vector<End> seznamKoncevBackup;
 	std::vector<Monster> seznamPosastiBackup;
 
 public:
@@ -527,8 +546,10 @@ public:
 	std::vector<Bandage> seznamZdravil;
 	std::vector<Coin> seznamKovancev;
 	std::vector<Key> seznamKljucev;
+	std::vector<End> seznamKoncev;
 	std::vector<Monster> seznamPosasti;
 	WorkArea workArea;
+	int level = 0;
 
 	void makeBackup() {
 		playerBackup = player;
@@ -540,6 +561,7 @@ public:
 		seznamKovancevBackup = seznamKovancev;
 		seznamKljucevBackup = seznamKljucev;
 		seznamPosastiBackup = seznamPosasti;
+		seznamKoncevBackup = seznamKoncev;
 	}
 
 	void restore() {
@@ -552,6 +574,7 @@ public:
 		seznamKovancev = seznamKovancevBackup;
 		seznamKljucev = seznamKljucevBackup;
 		seznamPosasti = seznamPosastiBackup;
+		seznamKoncev = seznamKoncevBackup;
 	}
 
 	void clear() {
@@ -570,10 +593,14 @@ public:
 		seznamKovancevBackup.clear();
 		seznamKljucev.clear();
 		seznamKljucevBackup.clear();
+		seznamKoncev.clear();
+		seznamKoncevBackup.clear();
 		seznamPosasti.clear();
 		seznamPosastiBackup.clear();
 	}
 };
+
+void LevelRooms(Seznami* seznami);
 
 
 

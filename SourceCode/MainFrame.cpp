@@ -6,35 +6,13 @@
 
 
 Seznami* seznami = new Seznami;
-//WorkArea* workArea = new WorkArea;
 
 wxSlider* slider;
 wxSlider* sliderX;
 wxSlider* sliderY;
 wxGauge* healthBar;
 
-MainFrame::MainFrame(const wxString& title) : wxFrame(nullptr, wxID_ANY, title) {
-
-	seznami->player = Hero(120, 6, 1, koordinate(0, 0));
-	seznami->seznamZidov.push_back(Wall(koordinate(3, 0)));
-	seznami->seznamZidov.push_back(Wall(koordinate(3, 1)));
-	seznami->seznamVrat.push_back(Door(koordinate(0, 4)));
-	seznami->seznamPortalov.push_back(Portal(koordinate(4, 0), koordinate(6, 8)));
-	seznami->seznamPasti.push_back(Trap(20, koordinate(0, 2)));
-	seznami->seznamPasti.push_back(Trap(20, koordinate(1, 2)));
-	seznami->seznamPasti.push_back(Trap(20, koordinate(2, 2)));
-	seznami->seznamPasti.push_back(Trap(20, koordinate(3, 2)));
-	seznami->seznamPasti.push_back(Trap(20, koordinate(6, 9)));
-	seznami->seznamZdravil.push_back(Bandage(5, koordinate(3, 3)));
-	seznami->seznamKovancev.push_back(Coin(1, koordinate(1, 0)));
-	seznami->seznamKovancev.push_back(Coin(5, koordinate(2, 0)));
-	seznami->seznamKljucev.push_back(Key(koordinate(0, 1)));
-	seznami->seznamPosasti.push_back(Monster(20, 4, 0, 2, koordinate(9, 6)));
-	seznami->seznamPosasti.push_back(Monster(20, 4, 0, 2, koordinate(9, 5)));
-	seznami->seznamPosasti.push_back(Monster(20, 4, 0, 2, koordinate(1, 1)));
-	seznami->makeBackup();
-	Movement(seznami);
-	
+MainFrame::MainFrame(const wxString& title) : wxFrame(nullptr, wxID_ANY, title) {	
 
 	wxPanel* panel = new wxPanel(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxWANTS_CHARS);
 
@@ -77,6 +55,9 @@ MainFrame::MainFrame(const wxString& title) : wxFrame(nullptr, wxID_ANY, title) 
 
 	wxStatusBar* statusBar = CreateStatusBar();
 	panel->SetDoubleBuffered(true);
+
+
+	LevelRooms(seznami);
 }
 
 
@@ -206,8 +187,8 @@ void MainFrame::OnPaint(wxPaintEvent& evt) {
 	for (int i = 0; i < seznami->seznamVrat.size(); i++) { // Door
 		if (seznami->seznamVrat[i].getLocked()) dc.SetBrush(wxBrush(wxColour(0, 0, 0), wxBRUSHSTYLE_LAST_HATCH));
 		else dc.SetBrush(wxBrush(wxColour(255, 255, 255), wxBRUSHSTYLE_SOLID));
-		wxPoint wallPoint(seznami->seznamVrat[i].getLocation().x, seznami->seznamVrat[i].getLocation().y);
-		dc.DrawRectangle(wxPoint(300, 0) + wallPoint * tileSize + wxPoint(tileSize, tileSize) / 4, wxSize(tileSize, tileSize) / 2);
+		wxPoint doorPoint(seznami->seznamVrat[i].getLocation().x, seznami->seznamVrat[i].getLocation().y);
+		dc.DrawRectangle(wxPoint(300, 0) + doorPoint * tileSize + wxPoint(tileSize, tileSize) / 4, wxSize(tileSize, tileSize) / 2);
 	}
 
 	dc.SetBrush(wxBrush(wxColour(255, 0, 153), wxBRUSHSTYLE_SOLID)); // Portal
@@ -222,26 +203,32 @@ void MainFrame::OnPaint(wxPaintEvent& evt) {
 
 	dc.SetBrush(wxBrush(wxColour(153, 0, 0), wxBRUSHSTYLE_SOLID)); // Trap
 	for (int i = 0; i < seznami->seznamPasti.size(); i++) {
-		wxPoint wallPoint(seznami->seznamPasti[i].getLocation().x, seznami->seznamPasti[i].getLocation().y);
-		dc.DrawRectangle(wxPoint(300, 0) + wallPoint * tileSize + wxPoint(tileSize, tileSize) / 4, wxSize(tileSize, tileSize) / 2);
+		wxPoint trapPoint(seznami->seznamPasti[i].getLocation().x, seznami->seznamPasti[i].getLocation().y);
+		dc.DrawRectangle(wxPoint(300, 0) + trapPoint * tileSize + wxPoint(tileSize, tileSize) / 4, wxSize(tileSize, tileSize) / 2);
 	}
 
 	dc.SetBrush(wxBrush(wxColour(0, 153, 0), wxBRUSHSTYLE_SOLID)); // Bandage
 	for (int i = 0; i < seznami->seznamZdravil.size(); i++) {
-		wxPoint wallPoint(seznami->seznamZdravil[i].getLocation().x, seznami->seznamZdravil[i].getLocation().y);
-		dc.DrawRectangle(wxPoint(300, 0) + wallPoint * tileSize + wxPoint(tileSize, tileSize) / 4, wxSize(tileSize, tileSize) / 2);
+		wxPoint bandagePoint(seznami->seznamZdravil[i].getLocation().x, seznami->seznamZdravil[i].getLocation().y);
+		dc.DrawRectangle(wxPoint(300, 0) + bandagePoint * tileSize + wxPoint(tileSize, tileSize) / 4, wxSize(tileSize, tileSize) / 2);
 	}
 
 	dc.SetBrush(wxBrush(wxColour(153, 153, 0), wxBRUSHSTYLE_SOLID)); // Coin
 	for (int i = 0; i < seznami->seznamKovancev.size(); i++) {
-		wxPoint wallPoint(seznami->seznamKovancev[i].getLocation().x, seznami->seznamKovancev[i].getLocation().y);
-		dc.DrawRectangle(wxPoint(300, 0) + wallPoint * tileSize + wxPoint(tileSize, tileSize) / 4, wxSize(tileSize, tileSize) / 2);
+		wxPoint coinPoint(seznami->seznamKovancev[i].getLocation().x, seznami->seznamKovancev[i].getLocation().y);
+		dc.DrawRectangle(wxPoint(300, 0) + coinPoint * tileSize + wxPoint(tileSize, tileSize) / 4, wxSize(tileSize, tileSize) / 2);
 	}
 
 	dc.SetBrush(wxBrush(wxColour(153, 153, 153), wxBRUSHSTYLE_SOLID)); // Key
 	for (int i = 0; i < seznami->seznamKljucev.size(); i++) {
-		wxPoint wallPoint(seznami->seznamKljucev[i].getLocation().x, seznami->seznamKljucev[i].getLocation().y);
-		dc.DrawRectangle(wxPoint(300, 0) + wallPoint * tileSize + wxPoint(tileSize, tileSize) / 4, wxSize(tileSize, tileSize) / 2);
+		wxPoint keyPoint(seznami->seznamKljucev[i].getLocation().x, seznami->seznamKljucev[i].getLocation().y);
+		dc.DrawRectangle(wxPoint(300, 0) + keyPoint * tileSize + wxPoint(tileSize, tileSize) / 4, wxSize(tileSize, tileSize) / 2);
+	}
+
+	dc.SetBrush(wxBrush(wxColour(186, 219, 255), wxBRUSHSTYLE_SOLID)); // End
+	for (int i = 0; i < seznami->seznamKoncev.size(); i++) {
+		wxPoint endPoint(seznami->seznamKoncev[i].getLocation().x, seznami->seznamKoncev[i].getLocation().y);
+		dc.DrawRectangle(wxPoint(300, 0) + endPoint * tileSize + wxPoint(tileSize, tileSize) / 4, wxSize(tileSize, tileSize) / 2);
 	}
 
 	dc.SetBrush(wxBrush(wxColour(0, 0, 0), wxBRUSHSTYLE_SOLID)); // Monster
