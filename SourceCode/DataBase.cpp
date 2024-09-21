@@ -22,7 +22,7 @@ void LevelRooms(Seznami* seznami) {
 	switch (seznami->level) {
 	
 	case 0:
-		seznami->player = Hero(420, 6, 1, koordinate(0, 0));
+		seznami->player = Hero(420, 6, 1, seznami->player.getCoins(), seznami->player.getKeys(), koordinate(0, 0));
 		seznami->seznamZidov.push_back(Wall(koordinate(3, 0)));
 		seznami->seznamZidov.push_back(Wall(koordinate(3, 1)));
 		seznami->seznamVrat.push_back(Door(koordinate(0, 4)));
@@ -43,7 +43,7 @@ void LevelRooms(Seznami* seznami) {
 		break;
 	
 	case 1:
-		seznami->player = Hero(120, 6, 1, koordinate(0, 4));
+		seznami->player = Hero(120, 6, 1, seznami->player.getCoins(), seznami->player.getKeys(), koordinate(0, 4));
 		seznami->seznamZidov.push_back(Wall(koordinate(0, 2)));
 		seznami->seznamZidov.push_back(Wall(koordinate(1, 2)));
 		seznami->seznamZidov.push_back(Wall(koordinate(2, 2)));

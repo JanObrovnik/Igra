@@ -578,7 +578,7 @@ public:
 	}
 
 	void clear() {
-		player = Hero();
+		player = Hero(100, 6, 2, player.getCoins(), player.getKeys(), koordinate());
 		seznamZidov.clear();
 		seznamZidovBackup.clear();
 		seznamVrat.clear();

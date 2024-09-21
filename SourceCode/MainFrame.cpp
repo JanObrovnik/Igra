@@ -244,10 +244,10 @@ void MainFrame::OnPaint(wxPaintEvent& evt) {
 
 	//- Izpis vrednosti
 	wxPoint statusPoint(50, 500);
-	//wxPen maxHealthPen() ///////////// to
-	//wxBrush maxHealthBrush()
-	//wxPen healthPen()
-	//wxBrush healthBrush()
+	wxPen maxHealthPen;
+	wxBrush maxHealthBrush;
+	wxPen healthPen;
+	wxBrush healthBrush;
 
 	wxSize maxHealthBar(seznami->player.getMaxHp(), 15);
 	wxSize healthBar(seznami->player.getHp(), 15);
@@ -256,40 +256,39 @@ void MainFrame::OnPaint(wxPaintEvent& evt) {
 	if (seznami->player.getMaxHp() > 200) maxHealthBar.x = 200;
 
 	if (seznami->player.getHp() > 400) {
+		maxHealthPen = wxPen(wxColour(246, 114, 0), 1, wxPENSTYLE_SOLID);
+		maxHealthBrush = wxBrush(wxColour(246, 114, 0), wxBRUSHSTYLE_SOLID);
+
+		healthPen = wxPen(wxColour(254, 223, 0), 1, wxPENSTYLE_SOLID);
+		healthBrush = wxBrush(wxColour(254, 223, 0), wxBRUSHSTYLE_SOLID);
 
 		healthBar.x -= 400;
-
-		dc.SetPen(wxPen(wxColour(246, 114, 0), 1, wxPENSTYLE_SOLID)); /////////////// tukaj
-		dc.SetBrush(wxBrush(wxColour(246, 114, 0), wxBRUSHSTYLE_SOLID));
-		dc.DrawRectangle(statusPoint + wxPoint(0, 0), maxHealthBar); ///////////// posebi
-
-		dc.SetPen(wxPen(wxColour(254, 223, 0), 1, wxPENSTYLE_SOLID));
-		dc.SetBrush(wxBrush(wxColour(254, 223, 0), wxBRUSHSTYLE_SOLID));
-		dc.DrawRectangle(statusPoint + wxPoint(0, 0), healthBar);
 	}
 	else if (seznami->player.getHp() > 200) {
-		
+		maxHealthPen = wxPen(wxColour(204, 0, 0), 1, wxPENSTYLE_SOLID);
+		maxHealthBrush = wxBrush(wxColour(204, 0, 0), wxBRUSHSTYLE_SOLID);
+
+		healthPen = wxPen(wxColour(246, 114, 0), 1, wxPENSTYLE_SOLID);
+		healthBrush = wxBrush(wxColour(246, 114, 0), wxBRUSHSTYLE_SOLID);
+
 		healthBar.x -= 200;
-
-		dc.SetPen(wxPen(wxColour(204, 0, 0), 1, wxPENSTYLE_SOLID)); /////////////// tukaj
-		dc.SetBrush(wxBrush(wxColour(204, 0, 0), wxBRUSHSTYLE_SOLID));
-		dc.DrawRectangle(statusPoint + wxPoint(0, 0), maxHealthBar); ///////////// posebi
-
-		dc.SetPen(wxPen(wxColour(246, 114, 0), 1, wxPENSTYLE_SOLID));
-		dc.SetBrush(wxBrush(wxColour(246, 114, 0), wxBRUSHSTYLE_SOLID));
-		dc.DrawRectangle(statusPoint + wxPoint(0, 0), healthBar);
 	}
 	else {
+		maxHealthPen = wxPen(wxColour(0, 0, 0), 1, wxPENSTYLE_SOLID);
+		maxHealthBrush = wxBrush(wxColour(0, 0, 0), wxBRUSHSTYLE_SOLID);
 
-		dc.SetPen(wxPen(wxColour(0, 0, 0), 1, wxPENSTYLE_SOLID));
-		dc.SetBrush(wxBrush(wxColour(0, 0, 0), wxBRUSHSTYLE_SOLID));
-		dc.DrawRectangle(statusPoint + wxPoint(0, 0), maxHealthBar);
-
-		dc.SetPen(wxPen(wxColour(204, 0, 0), 1, wxPENSTYLE_SOLID));
-		dc.SetBrush(wxBrush(wxColour(204, 0, 0), wxBRUSHSTYLE_SOLID));
-		dc.DrawRectangle(statusPoint + wxPoint(0, 0), healthBar);
+		healthPen = wxPen(wxColour(204, 0, 0), 1, wxPENSTYLE_SOLID);
+		healthBrush = wxBrush(wxColour(204, 0, 0), wxBRUSHSTYLE_SOLID);
 	}
 
+	dc.SetPen(maxHealthPen);
+	dc.SetBrush(maxHealthBrush);
+	dc.DrawRectangle(statusPoint + wxPoint(0, 0), maxHealthBar);
+
+	dc.SetPen(healthPen);
+	dc.SetBrush(healthBrush);
+	dc.DrawRectangle(statusPoint + wxPoint(0, 0), healthBar);
+
 	dc.DrawText(wxString::Format("Coins: %d", seznami->player.getCoins()), statusPoint + wxPoint(0, 25));
-	dc.DrawText(wxString::Format("Keys: %d", seznami->player.getKeys()), statusPoint + wxPoint(0, 45)); ///////////// Keys se resetirajo na prestopu iz levelov
+	dc.DrawText(wxString::Format("Keys: %d", seznami->player.getKeys()), statusPoint + wxPoint(0, 45));
 }
