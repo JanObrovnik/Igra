@@ -7,11 +7,6 @@
 
 Seznami* seznami = new Seznami;
 
-wxSlider* slider;
-wxSlider* sliderX;
-wxSlider* sliderY;
-wxGauge* healthBar;
-
 MainFrame::MainFrame(const wxString& title) : wxFrame(nullptr, wxID_ANY, title) {	
 
 	wxPanel* panel = new wxPanel(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxWANTS_CHARS);
@@ -19,21 +14,13 @@ MainFrame::MainFrame(const wxString& title) : wxFrame(nullptr, wxID_ANY, title) 
 
 	int velikost = 64;
 	int razdalja = 2 + velikost;
-	wxButton* test = new wxButton(panel, wxID_ANY, "Test", wxPoint(100, 0), wxDefaultSize);
-	wxButton* up = new wxButton(panel, wxID_ANY, "Up", wxPoint(100, 200), wxSize(velikost, velikost));
-	wxButton* right = new wxButton(panel, wxID_ANY, "Right", wxPoint(100 + razdalja, 200 + razdalja / 2), wxSize(velikost, velikost));
-	wxButton* down = new wxButton(panel, wxID_ANY, "Down", wxPoint(100, 200 + razdalja), wxSize(velikost, velikost));
-	wxButton* left = new wxButton(panel, wxID_ANY, "Left", wxPoint(100 - razdalja, 200 + razdalja / 2), wxSize(velikost, velikost));
-	wxButton* reset = new wxButton(panel, wxID_ANY, "Reset", wxPoint(100 + 2 * razdalja + 6, 200), wxSize(velikost * 2 / 3, velikost * 2 / 3));
-	wxButton* save = new wxButton(panel, wxID_ANY, "Save", wxPoint(100 + 2 * razdalja + 6, 200 + velikost * 2 / 3 + 2), wxSize(velikost * 2 / 3, velikost * 2 / 3));
-	wxButton* load = new wxButton(panel, wxID_ANY, "Load", wxPoint(100 + 2 * razdalja + 6, 200 + 2* (velikost * 2 / 3 + 2)), wxSize(velikost * 2 / 3, velikost * 2 / 3));
-
-	slider = new wxSlider(panel, wxID_ANY, 0, 0, 100, wxPoint(100, 100), wxDefaultSize, wxSL_LABELS);
-	sliderX = new wxSlider(panel, wxID_ANY, seznami->player.getLocation().x, 0, 10, wxPoint(85, 350), wxDefaultSize, wxSL_LABELS);
-	sliderY = new wxSlider(panel, wxID_ANY, seznami->player.getLocation().y, 0, 10, wxPoint(85, 400), wxDefaultSize, wxSL_LABELS);
-
-	healthBar = new wxGauge(panel, wxID_ANY, seznami->player.getMaxHp(), wxPoint(10, 200), wxSize(-1, velikost + razdalja), wxGA_VERTICAL);
-	healthBar->SetValue(seznami->player.getHp());
+	wxButton* up = new wxButton(panel, wxID_ANY, "Up", wxPoint(100, 100), wxSize(velikost, velikost));
+	wxButton* right = new wxButton(panel, wxID_ANY, "Right", wxPoint(100 + razdalja, 100 + razdalja / 2), wxSize(velikost, velikost));
+	wxButton* down = new wxButton(panel, wxID_ANY, "Down", wxPoint(100, 100 + razdalja), wxSize(velikost, velikost));
+	wxButton* left = new wxButton(panel, wxID_ANY, "Left", wxPoint(100 - razdalja, 100 + razdalja / 2), wxSize(velikost, velikost));
+	wxButton* reset = new wxButton(panel, wxID_ANY, "Reset", wxPoint(100 + 2 * razdalja + 6, 100), wxSize(velikost * 2 / 3, velikost * 2 / 3));
+	wxButton* save = new wxButton(panel, wxID_ANY, "Save", wxPoint(100 + 2 * razdalja + 6, 100 + velikost * 2 / 3 + 2), wxSize(velikost * 2 / 3, velikost * 2 / 3));
+	wxButton* load = new wxButton(panel, wxID_ANY, "Load", wxPoint(100 + 2 * razdalja + 6, 100 + 2* (velikost * 2 / 3 + 2)), wxSize(velikost * 2 / 3, velikost * 2 / 3));
 
 
 	/*wxPNGHandler* handler = new wxPNGHandler;
@@ -42,7 +29,6 @@ MainFrame::MainFrame(const wxString& title) : wxFrame(nullptr, wxID_ANY, title) 
 	image = new wxStaticBitmap(panel, wxID_ANY, wxBitmap("C:\Users\Marko\Documents\Imag.png", wxBITMAP_TYPE_PNG), wxPoint(50, 100), wxSize(100, 500));*/
 
 
-	test->Bind(wxEVT_BUTTON, &MainFrame::OnTestClicked, this);
 	up->Bind(wxEVT_BUTTON, &MainFrame::OnUpClicked, this);
 	right->Bind(wxEVT_BUTTON, &MainFrame::OnRightClicked, this);
 	down->Bind(wxEVT_BUTTON, &MainFrame::OnDownClicked, this);
@@ -61,19 +47,10 @@ MainFrame::MainFrame(const wxString& title) : wxFrame(nullptr, wxID_ANY, title) 
 }
 
 
-void MainFrame::OnTestClicked(wxCommandEvent& evt) {
-
-	slider->SetValue(seznami->player.getHp());
-}
-
 void MainFrame::OnUpClicked(wxCommandEvent& evt) {
 
 	seznami->player.moveNorth();
 	Movement(seznami);
-
-	sliderX->SetValue(seznami->player.getLocation().x);
-	sliderY->SetValue(seznami->player.getLocation().y);
-	healthBar->SetValue(seznami->player.getHp());
 
 	Refresh();
 }
@@ -83,10 +60,6 @@ void MainFrame::OnRightClicked(wxCommandEvent& evt) {
 	seznami->player.moveEast();
 	Movement(seznami);
 
-	sliderX->SetValue(seznami->player.getLocation().x);
-	sliderY->SetValue(seznami->player.getLocation().y);
-	healthBar->SetValue(seznami->player.getHp());
-
 	Refresh();
 }
 
@@ -94,10 +67,6 @@ void MainFrame::OnDownClicked(wxCommandEvent& evt) {
 
 	seznami->player.moveSouth();
 	Movement(seznami);
-
-	sliderX->SetValue(seznami->player.getLocation().x);
-	sliderY->SetValue(seznami->player.getLocation().y);
-	healthBar->SetValue(seznami->player.getHp());
 
 	Refresh();
 }
@@ -107,10 +76,6 @@ void MainFrame::OnLeftClicked(wxCommandEvent& evt) {
 	seznami->player.moveWest();
 	Movement(seznami);
 
-	sliderX->SetValue(seznami->player.getLocation().x);
-	sliderY->SetValue(seznami->player.getLocation().y);
-	healthBar->SetValue(seznami->player.getHp());
-
 	Refresh();
 }
 
@@ -118,10 +83,6 @@ void MainFrame::OnResetClicked(wxCommandEvent& evt) {
 
 	seznami->restore();
 	Movement(seznami);
-
-	sliderX->SetValue(seznami->player.getLocation().x);
-	sliderY->SetValue(seznami->player.getLocation().y);
-	healthBar->SetValue(seznami->player.getHp());
 
 	Refresh();
 }
@@ -243,7 +204,7 @@ void MainFrame::OnPaint(wxPaintEvent& evt) {
 	
 
 	//- Izpis vrednosti
-	wxPoint statusPoint(50, 500);
+	wxPoint statusPoint(35, 20); //dc.DrawRectangle(statusPoint + wxPoint(0, 0), wxSize(240,15));
 	wxPen maxHealthPen;
 	wxBrush maxHealthBrush;
 	wxPen healthPen;
@@ -253,25 +214,27 @@ void MainFrame::OnPaint(wxPaintEvent& evt) {
 	wxSize healthBar(seznami->player.getHp(), 15);
 
 
-	if (seznami->player.getMaxHp() > 200) maxHealthBar.x = 200;
+	int barLenght = 240;
 
-	if (seznami->player.getHp() > 400) {
+	if (seznami->player.getMaxHp() > barLenght) maxHealthBar.x = barLenght;
+
+	if (seznami->player.getHp() > barLenght * 2) {
 		maxHealthPen = wxPen(wxColour(246, 114, 0), 1, wxPENSTYLE_SOLID);
 		maxHealthBrush = wxBrush(wxColour(246, 114, 0), wxBRUSHSTYLE_SOLID);
 
 		healthPen = wxPen(wxColour(254, 223, 0), 1, wxPENSTYLE_SOLID);
 		healthBrush = wxBrush(wxColour(254, 223, 0), wxBRUSHSTYLE_SOLID);
 
-		healthBar.x -= 400;
+		healthBar.x -= barLenght * 2;
 	}
-	else if (seznami->player.getHp() > 200) {
+	else if (seznami->player.getHp() > barLenght) {
 		maxHealthPen = wxPen(wxColour(204, 0, 0), 1, wxPENSTYLE_SOLID);
 		maxHealthBrush = wxBrush(wxColour(204, 0, 0), wxBRUSHSTYLE_SOLID);
 
 		healthPen = wxPen(wxColour(246, 114, 0), 1, wxPENSTYLE_SOLID);
 		healthBrush = wxBrush(wxColour(246, 114, 0), wxBRUSHSTYLE_SOLID);
 
-		healthBar.x -= 200;
+		healthBar.x -= barLenght;
 	}
 	else {
 		maxHealthPen = wxPen(wxColour(0, 0, 0), 1, wxPENSTYLE_SOLID);

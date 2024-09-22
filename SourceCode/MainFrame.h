@@ -8,7 +8,6 @@ public:
 
 	void OnPaint(wxPaintEvent& evt);
 private:
-	void OnTestClicked(wxCommandEvent& evt);
 	void OnUpClicked(wxCommandEvent& evt);
 	void OnRightClicked(wxCommandEvent& evt);
 	void OnDownClicked(wxCommandEvent& evt);
