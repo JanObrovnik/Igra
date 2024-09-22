@@ -4,6 +4,11 @@
 #include <vector>
 #include <fstream>
 
+#define CONNECTS_NORTH 0b0001
+#define CONNECTS_EAST 0b0010
+#define CONNECTS_SOUTH 0b0100
+#define CONNECTS_WEST 0b1000
+
 
 class koordinate {
 
@@ -83,11 +88,12 @@ class Wall {
 private:
 	bool exist;
 	koordinate point;
+	unsigned short connections;
 
 public:
-	Wall() : exist(true), point(koordinate()) {}
-	Wall(koordinate xy) : exist(true), point(xy) {}
-	Wall(bool ex, koordinate xy) : exist(ex), point(xy) {}
+	Wall() : exist(true), point(koordinate()), connections(0) {}
+	Wall(koordinate xy) : exist(true), point(xy), connections(0) {}
+	Wall(bool ex, koordinate xy) : exist(ex), point(xy), connections(0) {}
 
 	bool getExist() const {
 		return exist;
@@ -95,12 +101,18 @@ public:
 	koordinate getLocation() const {
 		return point;
 	}
+	unsigned short getConnections() const {
+		return connections;
+	}
 
 	void setExist(bool ex) {
 		exist = ex;
 	}
 	void setLocation(koordinate xy) {
 		point = xy;
+	}
+	void setConnections(unsigned short connect) {
+		connections = connect;
 	}
 
 	void effect() {
@@ -609,7 +621,7 @@ public:
 
 void LevelRooms(Seznami* seznami, int level);
 
-
+void CheckConnections(Seznami* seznami);
 
 void Movement(Seznami* seznami);
 bool IllegalMove(Seznami* seznami);

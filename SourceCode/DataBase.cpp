@@ -55,8 +55,8 @@ void LevelRooms(Seznami* seznami, int level) {
 		seznami->seznamZidov.push_back(Wall(koordinate(2, 6)));
 		seznami->seznamZidov.push_back(Wall(koordinate(1, 6)));
 		seznami->seznamZidov.push_back(Wall(koordinate(0, 6)));
-		seznami->seznamZidov.push_back(Wall(koordinate(2, 0)));
-		seznami->seznamZidov.push_back(Wall(koordinate(2, 1)));
+		seznami->seznamZidov.push_back(Wall(koordinate(1, 0)));
+		seznami->seznamZidov.push_back(Wall(koordinate(1, 1)));
 		seznami->seznamVrat.push_back(Door(koordinate(3, 4)));
 		seznami->seznamPortalov.push_back(Portal(koordinate(0, 0), koordinate(2, 3)));
 		seznami->seznamKovancev.push_back(Coin(5, koordinate(2, 4)));
@@ -68,11 +68,43 @@ void LevelRooms(Seznami* seznami, int level) {
 	default:
 		break;
 	}
-
-	seznami->makeBackup();
+	
 	Movement(seznami);
+	CheckConnections(seznami);
+	seznami->makeBackup();
 }
 
+
+void CheckConnections(Seznami* seznami) {
+
+	for (int i = 0; i < seznami->seznamZidov.size(); i++) {
+
+		std::vector<koordinate> sosednjeStrani({ koordinate(0, -1), koordinate(1, 0), koordinate(0, 1), koordinate(-1, 0) });
+		std::vector<unsigned short> styleStrani({ CONNECTS_NORTH, CONNECTS_EAST, CONNECTS_SOUTH, CONNECTS_WEST });
+
+		for (int j = 0; j < 4; j++) { ///////////////// mogoc ze tle
+
+			koordinate ko = seznami->seznamZidov[i].getLocation() + sosednjeStrani[j];
+
+			for (int k = 0; k < seznami->seznamZidov.size(); k++) { ////////////////// posebi funkcija - preureditev
+
+				if (ko == seznami->seznamZidov[k].getLocation()) {
+
+					seznami->seznamZidov[i].setConnections(seznami->seznamZidov[i].getConnections() | styleStrani[j]);
+				}
+			}
+			for (int k = 0; k < seznami->seznamVrat.size(); k++) { ////////////////// posebi funkcija to tud ke skupi
+
+				if (ko == seznami->seznamVrat[k].getLocation()) {
+
+					seznami->seznamZidov[i].setConnections(seznami->seznamZidov[i].getConnections() | styleStrani[j]);
+				}
+			}
+
+			//WallCollision(ko, seznami) ////////////////////// argumenti posebi funkcije
+		}
+	}
+}
 
 
 void Movement(Seznami* seznami) {
@@ -161,7 +193,6 @@ void Movement(Seznami* seznami) {
 	}
 	for (int i = 0; i < seznami->seznamKoncev.size(); i++) {
 		if (seznami->player.collision(seznami->seznamKoncev[i].getLocation())) {
-			seznami->level++;
 			LevelRooms(seznami, seznami->seznamKoncev[i].getNextLevel());
 
 			return;
@@ -220,7 +251,8 @@ void Shrani(Seznami* seznami, std::string pot) {
 		shrani << seznami->seznamZidov.size() << std::endl;
 		for (int i = 0; i < seznami->seznamZidov.size(); i++) {
 			shrani << seznami->seznamZidov[i].getExist() << ", ";
-			shrani << seznami->seznamZidov[i].getLocation() << ", " << std::endl;
+			shrani << seznami->seznamZidov[i].getLocation() << ", ";
+			shrani << seznami->seznamZidov[i].getConnections() << ", " << std::endl;
 		}
 		shrani << std::endl;
 
@@ -272,6 +304,14 @@ void Shrani(Seznami* seznami, std::string pot) {
 		}
 		shrani << std::endl;
 
+		shrani << "End: ";
+		shrani << seznami->seznamKoncev.size() << std::endl;
+		for (int i = 0; i < seznami->seznamKoncev.size(); i++) {
+			shrani << seznami->seznamKoncev[i].getNextLevel() << ", ";
+			shrani << seznami->seznamKoncev[i].getLocation() << ", " << std::endl;
+		}
+		shrani << std::endl;
+
 		shrani << "Monster: ";
 		shrani << seznami->seznamPosasti.size() << std::endl;
 		for (int i = 0; i < seznami->seznamPosasti.size(); i++) {
@@ -320,6 +360,7 @@ void Nalozi(Seznami* seznami, std::string pot) {
 			seznami->seznamZidov.push_back(Wall());
 			nalozi >> st >> c; seznami->seznamZidov[i].setExist(st);
 			nalozi >> xy >> c; seznami->seznamZidov[i].setLocation(xy);
+			nalozi >> st >> c; seznami->seznamZidov[i].setConnections(st);
 		}
 
 		nalozi >> bes >> pon;
@@ -368,6 +409,14 @@ void Nalozi(Seznami* seznami, std::string pot) {
 		for (int i = 0; i < pon; i++) {
 			seznami->seznamKljucev.push_back(Key());
 			nalozi >> xy >> c; seznami->seznamKljucev[i].setLocation(xy);
+		}
+
+		nalozi >> bes >> pon;
+		if (bes != "End:") wxLogStatus("No End found");
+		for (int i = 0; i < pon; i++) {
+			seznami->seznamKoncev.push_back(End());
+			nalozi >> st >> c; seznami->seznamKoncev[i].setNextLevel(st);
+			nalozi >> xy >> c; seznami->seznamKoncev[i].setLocation(xy);
 		}
 
 		nalozi >> bes >> pon;
