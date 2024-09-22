@@ -298,18 +298,25 @@ public:
 class End {
 
 private:
+	int nextLevel;
 	koordinate point;
 
 public:
-	End() : point(koordinate()) {}
-	End(koordinate xy) : point(xy) {}
+	End() : nextLevel(-1), point(koordinate()) {}
+	End(int nextLevel, koordinate xy) : nextLevel(nextLevel), point(xy) {}
 
 	koordinate getLocation() const {
 		return point;
 	}
+	int getNextLevel() const {
+		return nextLevel;
+	}
 
 	void setLocation(koordinate xy) {
 		point = xy;
+	}
+	void setNextLevel(int level) {
+		nextLevel = level;
 	}
 };
 
@@ -600,7 +607,7 @@ public:
 	}
 };
 
-void LevelRooms(Seznami* seznami);
+void LevelRooms(Seznami* seznami, int level);
 
 
 

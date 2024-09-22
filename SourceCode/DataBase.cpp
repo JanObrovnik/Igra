@@ -15,11 +15,12 @@ std::istream& operator>>(std::istream& is, koordinate& ko) {
 
 
 
-void LevelRooms(Seznami* seznami) {
+void LevelRooms(Seznami* seznami, int level) {
 	
 	seznami->clear();
+	seznami->level = level;
 
-	switch (seznami->level) {
+	switch (level) {
 	
 	case 0:
 		seznami->player = Hero(420, 6, 1, seznami->player.getCoins(), seznami->player.getKeys(), koordinate(0, 0));
@@ -36,7 +37,7 @@ void LevelRooms(Seznami* seznami) {
 		seznami->seznamKovancev.push_back(Coin(1, koordinate(1, 0)));
 		seznami->seznamKovancev.push_back(Coin(5, koordinate(2, 0)));
 		seznami->seznamKljucev.push_back(Key(koordinate(0, 1)));
-		seznami->seznamKoncev.push_back(End(koordinate(9, 9)));
+		seznami->seznamKoncev.push_back(End(1, koordinate(9, 9)));
 		seznami->seznamPosasti.push_back(Monster(20, 4, 0, 2, koordinate(9, 6)));
 		seznami->seznamPosasti.push_back(Monster(20, 4, 0, 2, koordinate(9, 5)));
 		seznami->seznamPosasti.push_back(Monster(20, 4, 0, 2, koordinate(1, 1)));
@@ -60,7 +61,7 @@ void LevelRooms(Seznami* seznami) {
 		seznami->seznamPortalov.push_back(Portal(koordinate(0, 0), koordinate(2, 3)));
 		seznami->seznamKovancev.push_back(Coin(5, koordinate(2, 4)));
 		seznami->seznamKljucev.push_back(Key(koordinate(0, 1)));
-		seznami->seznamKoncev.push_back(End(koordinate(9, 0)));
+		seznami->seznamKoncev.push_back(End(-1, koordinate(9, 0)));
 		seznami->seznamPosasti.push_back(Monster(32, 6, 2, 5, koordinate(4, 4)));
 		break;
 
@@ -161,7 +162,7 @@ void Movement(Seznami* seznami) {
 	for (int i = 0; i < seznami->seznamKoncev.size(); i++) {
 		if (seznami->player.collision(seznami->seznamKoncev[i].getLocation())) {
 			seznami->level++;
-			LevelRooms(seznami);
+			LevelRooms(seznami, seznami->seznamKoncev[i].getNextLevel());
 
 			return;
 			//break;

@@ -57,7 +57,7 @@ MainFrame::MainFrame(const wxString& title) : wxFrame(nullptr, wxID_ANY, title) 
 	panel->SetDoubleBuffered(true);
 
 
-	LevelRooms(seznami);
+	LevelRooms(seznami, 0);
 }
 
 
