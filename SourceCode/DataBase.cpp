@@ -77,31 +77,22 @@ void LevelRooms(Seznami* seznami, int level) {
 
 void CheckConnections(Seznami* seznami) {
 
-	for (int i = 0; i < seznami->seznamZidov.size(); i++) {
+std::vector<koordinate> sosednjeStrani({ koordinate(0, -1), koordinate(1, 0), koordinate(0, 1), koordinate(-1, 0) });
+std::vector<unsigned short> styleStrani({ CONNECTS_NORTH, CONNECTS_EAST, CONNECTS_SOUTH, CONNECTS_WEST });
 
-		std::vector<koordinate> sosednjeStrani({ koordinate(0, -1), koordinate(1, 0), koordinate(0, 1), koordinate(-1, 0) });
-		std::vector<unsigned short> styleStrani({ CONNECTS_NORTH, CONNECTS_EAST, CONNECTS_SOUTH, CONNECTS_WEST });
+	for (int i = 0; i < seznami->seznamZidov.size(); i++) for (int j = 0; j < 4; j++) {
 
-		for (int j = 0; j < 4; j++) { ///////////////// mogoc ze tle
+		koordinate ko = seznami->seznamZidov[i].getLocation() + sosednjeStrani[j];
 
-			koordinate ko = seznami->seznamZidov[i].getLocation() + sosednjeStrani[j];
+		for (int k = 0; k < seznami->seznamZidov.size(); k++) if (ko == seznami->seznamZidov[k].getLocation()) {
 
-			for (int k = 0; k < seznami->seznamZidov.size(); k++) { ////////////////// posebi funkcija - preureditev
+			seznami->seznamZidov[i].setConnections(seznami->seznamZidov[i].getConnections() | styleStrani[j]);
+			break;
+		}
+		for (int k = 0; k < seznami->seznamVrat.size(); k++) if (ko == seznami->seznamVrat[k].getLocation()) {
 
-				if (ko == seznami->seznamZidov[k].getLocation()) {
-
-					seznami->seznamZidov[i].setConnections(seznami->seznamZidov[i].getConnections() | styleStrani[j]);
-				}
-			}
-			for (int k = 0; k < seznami->seznamVrat.size(); k++) { ////////////////// posebi funkcija to tud ke skupi
-
-				if (ko == seznami->seznamVrat[k].getLocation()) {
-
-					seznami->seznamZidov[i].setConnections(seznami->seznamZidov[i].getConnections() | styleStrani[j]);
-				}
-			}
-
-			//WallCollision(ko, seznami) ////////////////////// argumenti posebi funkcije
+			seznami->seznamZidov[i].setConnections(seznami->seznamZidov[i].getConnections() | styleStrani[j]);
+			break;
 		}
 	}
 }
