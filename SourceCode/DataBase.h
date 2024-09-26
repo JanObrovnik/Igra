@@ -628,3 +628,36 @@ bool IllegalMove(Seznami* seznami);
 
 void Shrani(Seznami* seznami, std::string pot);
 void Nalozi(Seznami* seznami, std::string pot);
+
+
+class Entety {
+
+private:
+	int hp, maxHp;
+	int attack, defence;
+	koordinate point;
+
+public:
+	koordinate getPoint() const {
+		return point;
+	}
+
+	void setPoint(koordinate xy) {
+		point = xy;
+	}
+};
+
+class HeroTest : public Entety { // Pripise lastnosti 'Entety' //////////////// naredi za 'Hero' in 'Monster'
+
+private:
+	int coins, keys;
+
+public:
+	int getCoins() const {
+		return coins;
+	}
+
+	void setCoins(int amount) {
+		coins = amount;
+	}
+};
