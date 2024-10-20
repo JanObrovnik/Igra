@@ -13,7 +13,7 @@ public:
 	DrawingCanvas(wxWindow* parent, wxWindowID id, const wxPoint& pos, const wxSize& size);
 	virtual ~DrawingCanvas() {}
 
-	void addRect(int width, int hight, int centerX, int centerY, double angle, wxColour colour, const std::string& text);
+	void addEnemy(int width, int hight, int centerX, int centerY, double angle, wxColour colour, const std::string& text);
 	void removeTopRect();
 
 	int getObjectCout() { return objectList.size(); }

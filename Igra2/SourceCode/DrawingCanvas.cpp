@@ -9,6 +9,7 @@ wxDEFINE_EVENT(CANVAS_RECT_REMOVED, wxCommandEvent);
 DrawingCanvas::DrawingCanvas(wxWindow* parent, wxWindowID id, const wxPoint& pos, const wxSize& size) : wxWindow(parent, id ,pos, size) {
 
 	this->SetBackgroundStyle(wxBG_STYLE_PAINT);
+	this->SetBackgroundColour(wxColour(30, 30, 30));
 
 	this->Bind(wxEVT_PAINT, &DrawingCanvas::OnPaint, this);
 	this->Bind(wxEVT_LEFT_DOWN, &DrawingCanvas::OnMouseDown, this);
@@ -16,15 +17,15 @@ DrawingCanvas::DrawingCanvas(wxWindow* parent, wxWindowID id, const wxPoint& pos
 	this->Bind(wxEVT_LEFT_UP, &DrawingCanvas::OnMouseUp, this);
 	this->Bind(wxEVT_LEAVE_WINDOW, &DrawingCanvas::OnMouseLeave, this);
 
-	addRect(100, 80, 210, 140, 0, *wxRED, "#1");
-	addRect(130, 110, 280, 210, M_PI / 3., *wxBLUE, "#2");
-	addRect(110, 110, 300, 120, -M_PI / 4., wxColour(255, 0, 255, 127), "#3");
+	//addRect(100, 80, 210, 140, 0, *wxRED, "#1");
+	//addRect(130, 110, 280, 210, M_PI / 3., *wxBLUE, "#2");
+	//addRect(110, 110, 300, 120, -M_PI / 4., wxColour(255, 0, 255, 127), "#3");
 
 	this->draggedObj = nullptr;
 	this->shouldRotate = false;
 }
 
-void DrawingCanvas::addRect(int width, int hight, int centerX, int centerY, double angle, wxColour colour, const std::string& text) { // raje pos pred size
+void DrawingCanvas::addEnemy(int width, int hight, int centerX, int centerY, double angle, wxColour colour, const std::string& text) { // raje pos pred size
 
 	GraphicObject obj{
 		{-width / 2.,
@@ -163,6 +164,11 @@ void DrawingCanvas::OnMouseMove(wxMouseEvent& evt) {
 		lastDragOrigin = evt.GetPosition();
 		Refresh();
 	}
+
+	//else {
+	//
+	//
+	//}
 }
 
 void DrawingCanvas::OnMouseUp(wxMouseEvent& evt) {

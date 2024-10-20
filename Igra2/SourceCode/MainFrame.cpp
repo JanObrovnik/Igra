@@ -6,7 +6,7 @@ MainFrame::MainFrame(const wxString& title) : wxFrame(nullptr, wxID_ANY, title) 
 
 	auto buttonPanel = createButtonPanel(this);
 
-	canvas = new DrawingCanvas(this, wxID_ANY, wxDefaultPosition, this->FromDIP(wxSize(640, 480)));
+	canvas = new DrawingCanvas(this, wxID_ANY, wxDefaultPosition, this->FromDIP(wxSize(800, 800)));
 	canvas->Bind(CANVAS_RECT_ADDED, &MainFrame::OnRectAdded, this);
 	canvas->Bind(CANVAS_RECT_REMOVED, &MainFrame::OnRectRemoved, this);
 
@@ -31,7 +31,7 @@ void MainFrame::OnAddButtonClicked(wxCommandEvent& evt) {
 	std::uniform_int_distribution<int> colourDistrib(0, 0xFFFFFF);
 
 	rectCount++;
-	canvas->addRect(sizeDistrib(randomGen), sizeDistrib(randomGen), xDistrib(randomGen), yDistrib(randomGen),
+	canvas->addEnemy(sizeDistrib(randomGen), sizeDistrib(randomGen), xDistrib(randomGen), yDistrib(randomGen),
 					angleDistrib(randomGen), wxColour(colourDistrib(randomGen)), "rect #" + std::to_string(rectCount));
 }
 
