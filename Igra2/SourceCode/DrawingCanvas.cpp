@@ -17,9 +17,14 @@ DrawingCanvas::DrawingCanvas(wxWindow* parent, wxWindowID id, const wxPoint& pos
 	this->Bind(wxEVT_LEFT_UP, &DrawingCanvas::OnMouseUp, this);
 	this->Bind(wxEVT_LEAVE_WINDOW, &DrawingCanvas::OnMouseLeave, this);
 
-	//addRect(100, 80, 210, 140, 0, *wxRED, "#1");
-	//addRect(130, 110, 280, 210, M_PI / 3., *wxBLUE, "#2");
-	//addRect(110, 110, 300, 120, -M_PI / 4., wxColour(255, 0, 255, 127), "#3");
+	//addEnemy(100, 80, 210, 140, 0, *wxRED, "#1");
+	//addEnemy(130, 110, 280, 210, M_PI / 3., *wxBLUE, "#2");
+	//addEnemy(110, 110, 300, 120, -M_PI / 4., wxColour(255, 0, 255, 127), "#3");
+
+	enemyList.push_back(Enemy(3, NORMAL, wxPoint(50, 250), 12));
+	enemyList.push_back(Enemy(3, NORMAL, wxPoint(100, 250), 8));
+	enemyList.push_back(Enemy(3, NORMAL, wxPoint(200, 200), 16));
+
 
 	this->draggedObj = nullptr;
 	this->shouldRotate = false;
@@ -61,36 +66,40 @@ void DrawingCanvas::removeTopRect() {
 
 void DrawingCanvas::OnPaint(wxPaintEvent& evt) {
 
+	std::for_each(projectileList.begin(), projectileList.end(), [](Projectile& projectile) {projectile.move(1); });
+	projectileList.remove_if([](Projectile projectile) {return projectile.outOfBounds(); });
+
+	std::for_each(enemyList.begin(), enemyList.end(), [&](Enemy& enemy) {
+		std::for_each(projectileList.begin(), projectileList.end(), [&](Projectile& projectile) {
+			if (enemy.collision(projectile.position)) {
+				enemy.takeDamage(projectile.damage);
+				projectile.takeDamage(projectile.damage);
+			}
+		});
+	});
+
+	projectileList.remove_if([](Projectile projectile) {return projectile.health == 0; });
+	enemyList.remove_if([](Enemy enemy) {return enemy.getHealth() == 0; });
+	
+	
 	wxAutoBufferedPaintDC dc(this);
 	dc.Clear();
 
 	wxGraphicsContext* gc = wxGraphicsContext::Create(dc);
+	
 
-	// rocno risanje
-	/*if (gc) {
+	dc.SetBrush(*wxWHITE);
+	for (const auto& projectile : projectileList) {
+		dc.DrawCircle(projectile.position, projectile.size);
+	}
 
-		wxSize rectSize = this->FromDIP(wxSize(100, 80)); // 'this->FromDIP()' da se ne scale-a
-		wxPoint rectOrigin = wxPoint(-rectSize.x / 2, -rectSize.y / 2);
+	dc.SetBrush(*wxRED);
+	for (const auto& enemy : enemyList) {
+		dc.DrawCircle(enemy.position, enemy.size);
+	}
 
-		wxAffineMatrix2D transform;
-		transform.Translate(100, 130);
-		transform.Rotate(M_PI / 3.); // rotiramo okoli (0,0)
-		transform.Scale(3, 3); // scale-a trenutno rotacijo v x in y
-		gc->SetTransform(gc->CreateMatrix(transform)); // gre v obratnem vrsten redu
-
-		gc->SetBrush(*wxRED_BRUSH);
-		gc->DrawRectangle(rectOrigin.x, rectOrigin.y, rectSize.x, rectSize.y);
-
-		gc->SetFont(*wxNORMAL_FONT, *wxWHITE);
-		wxString text = "test";
-
-		double textWidth, textHight;
-		gc->GetTextExtent(text, &textWidth, &textHight);
-
-		gc->DrawText("Text", rectOrigin.x + rectSize.x / 2 - textWidth / 2, rectOrigin.y + rectSize.y / 2 - textHight / 2);
-
-		delete gc;
-	}*/
+	dc.SetBrush(*wxBLUE);
+	dc.DrawCircle(hero.position, hero.size);
 
 
 	// risanje iz seznama
@@ -139,6 +148,11 @@ void DrawingCanvas::OnMouseDown(wxMouseEvent& evt) {
 
 		Refresh();
 	}
+
+	else {
+		projectileList.push_back(Projectile(hero.projectileType, hero.origin, hero.position));
+		Refresh();
+	}
 }
 
 void DrawingCanvas::OnMouseMove(wxMouseEvent& evt) {
@@ -165,10 +179,11 @@ void DrawingCanvas::OnMouseMove(wxMouseEvent& evt) {
 		Refresh();
 	}
 
-	//else {
-	//
-	//
-	//}
+	else {
+	
+		hero.setPosition(wxPoint(evt.GetPosition().x, hero.position.y));
+		Refresh();
+	}
 }
 
 void DrawingCanvas::OnMouseUp(wxMouseEvent& evt) {

@@ -3,6 +3,11 @@
 
 
 
+enum ProjectileOrigin {
+	PLAYER,
+	ENEMY
+};
+
 enum ProjectileType { //////////// doloci vsem svoje nastnosti v svojem struct/funkciji...
 	NORMAL,
 	BURST
@@ -18,48 +23,73 @@ struct GraphicObject {
 };
 
 
-struct ProjectileDefiner { /////////// verjetno neuporabno zaradi >6<
-	ProjectileType type;
-	wxPoint2DDouble velocity;
-	wxPoint2DDouble acceleration;
-
-	ProjectileDefiner(ProjectileType type, wxPoint2DDouble velocity, wxPoint2DDouble acceleration) : type(type), velocity(velocity), acceleration(acceleration) {}
-};
-
-struct Projectile {
-	ProjectileType type;
-	wxPoint2DDouble velocity; ///////// zamenja >6<
-	wxPoint2DDouble acceleration; ///////// zamenja >6<
-	wxPoint2DDouble location; ///////// zamenja >6<
-
-	Projectile(ProjectileDefiner def, wxPoint2DDouble loc) : type(def.type), velocity(def.velocity), acceleration(def.acceleration), location(loc) {}
-};
-
-
-
-class Enemy { ///////////// v "DrawingCanvas.h" kot list
+class Projectile {
 
 public:
-	GraphicObject properties;
-	ProjectileDefiner projectileDefiner;
+	ProjectileType type;
+	ProjectileOrigin origin;
+	int health, damage;
+	wxPoint velocity;
+	wxPoint acceleration;
+	wxPoint position;
+	const wxPoint positionOrigin;
+	double size;
+	double bounds;
 
-	Enemy(GraphicObject properties, ProjectileDefiner def) : properties(properties), projectileDefiner(def) {}
+	Projectile(ProjectileType type, ProjectileOrigin origin, wxPoint pos) : type(type), origin(origin), positionOrigin(pos) { setProperties(type, origin); }
 
+	void move(double time);
+	bool outOfBounds();
 
-};
-
-
-class Pratoria { ///////////// v "DrawingCanvas.h"
+	void takeDamage(int damageAmount);
 
 private:
-	int healt;
+	void setProperties(ProjectileType type, ProjectileOrigin origin);
+};
+
+
+
+class Entety {
 
 public:
-	ProjectileDefiner projectileDefiner;
+	int health;
+	ProjectileType projectileType;
+	ProjectileOrigin origin;
+	wxPoint position; // za okroglega
+	double size; // za okroglega
 
-	Pratoria(ProjectileDefiner def) : projectileDefiner(def) {}
+
+	bool collision(wxPoint projectile);
+
+	void takeDamage(int damageAmount) { health -= damageAmount; if (health < 0) health = 0; }
+	void heal(int healAmount) { health += healAmount; }
+
+	int getHealth() const { return health; }
+
+	void setPosition(wxPoint position) { this->position = position; }
+};
 
 
-	void takeDamage(int damageAmount) { healt -= damageAmount; }
-	void heal(int healAmount) { healt += healAmount; }
+class Enemy : public Entety{ ///////////// v "DrawingCanvas.h" kot list
+
+public:
+	Enemy(int health, ProjectileType type, wxPoint position, double size) {
+		this->health = health;
+		this->projectileType = type;
+		this->origin = ENEMY;
+		this->position = position;
+		this->size = size;
+	}
+};
+
+class Pratoria : public Entety { ///////////// v "DrawingCanvas.h"
+
+public:
+	Pratoria(int health, ProjectileType type, wxPoint position, double size) {
+		this->health = health;
+		this->projectileType = type;
+		this->origin = PLAYER;
+		this->position = position;
+		this->size = size;
+	}
 };

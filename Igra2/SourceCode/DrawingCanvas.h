@@ -37,5 +37,10 @@ private:
 	bool shouldRotate;
 
 	wxPoint2DDouble lastDragOrigin;
+
+
+	Pratoria hero = Pratoria(24, BURST, wxPoint(200, 650), 20);
+	std::list<Enemy> enemyList;
+	std::list<Projectile> projectileList;
 };
 
