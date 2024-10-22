@@ -1,6 +1,6 @@
 #pragma once
 #include <wx/wx.h>
-
+#include <random>
 
 
 enum ProjectileOrigin {
@@ -11,6 +11,11 @@ enum ProjectileOrigin {
 enum ProjectileType { //////////// doloci vsem svoje nastnosti v svojem struct/funkciji...
 	NORMAL,
 	BURST
+};
+
+enum LocationOrigin {
+	LEFT,
+	RIGHT
 };
 
 
@@ -80,6 +85,15 @@ public:
 		this->position = position;
 		this->size = size;
 	}
+
+	void move(double time);
+
+	void setSide(LocationOrigin side) { this->side = side; }
+
+private:
+
+	std::mt19937 randomGen;
+	LocationOrigin side = LEFT;
 };
 
 class Pratoria : public Entety { ///////////// v "DrawingCanvas.h"

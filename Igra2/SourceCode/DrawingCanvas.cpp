@@ -30,24 +30,35 @@ DrawingCanvas::DrawingCanvas(wxWindow* parent, wxWindowID id, const wxPoint& pos
 	this->shouldRotate = false;
 }
 
-void DrawingCanvas::addEnemy(int width, int hight, int centerX, int centerY, double angle, wxColour colour, const std::string& text) { // raje pos pred size
+void DrawingCanvas::addEnemy(int health, ProjectileType type, wxPoint position, double size) {
 
-	GraphicObject obj{
-		{-width / 2.,
-		-hight / 2.,
-		static_cast<double>(width),
-		static_cast<double>(hight)},
-		colour,
-		text,
-		{}};
+	//GraphicObject obj{
+	//	{-width / 2.,
+	//	-hight / 2.,
+	//	static_cast<double>(width),
+	//	static_cast<double>(hight)},
+	//	colour,
+	//	text,
+	//	{}};
+	//
+	//obj.transform.Translate(static_cast<double>(centerX), 
+	//						static_cast<double>(centerY));
+	//obj.transform.Rotate(angle);
+	//
+	//this->objectList.push_back(obj);
 
-	obj.transform.Translate(static_cast<double>(centerX), 
-							static_cast<double>(centerY));
-	obj.transform.Rotate(angle);
 
-	this->objectList.push_back(obj);
+	Enemy enemy{
+		health,
+		NORMAL,
+		position,
+		size
+	};
+	
+	enemyList.push_back(enemy);
 
-	sendRectAddedEvent(text);
+
+	//sendRectAddedEvent("New enemy");
 	Refresh();
 }
 
@@ -69,6 +80,8 @@ void DrawingCanvas::OnPaint(wxPaintEvent& evt) {
 	std::for_each(projectileList.begin(), projectileList.end(), [](Projectile& projectile) {projectile.move(1); });
 	projectileList.remove_if([](Projectile projectile) {return projectile.outOfBounds(); });
 
+	std::for_each(enemyList.begin(), enemyList.end(), [](Enemy& enemy) {enemy.move(1); });
+
 	std::for_each(enemyList.begin(), enemyList.end(), [&](Enemy& enemy) {
 		std::for_each(projectileList.begin(), projectileList.end(), [&](Projectile& projectile) {
 			if (enemy.collision(projectile.position)) {
@@ -81,6 +94,9 @@ void DrawingCanvas::OnPaint(wxPaintEvent& evt) {
 	projectileList.remove_if([](Projectile projectile) {return projectile.health == 0; });
 	enemyList.remove_if([](Enemy enemy) {return enemy.getHealth() == 0; });
 	
+	std::for_each(enemyList.begin(), enemyList.end(), [](Enemy& enemy) {if (enemy.position.x < 40) enemy.setSide(LEFT); else if (enemy.position.x > 760) enemy.setSide(RIGHT); });
+
+
 	
 	wxAutoBufferedPaintDC dc(this);
 	dc.Clear();

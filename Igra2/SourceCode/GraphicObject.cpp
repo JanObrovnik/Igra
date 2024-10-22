@@ -69,3 +69,13 @@ bool Entety::collision(wxPoint projectile) {
 	wxPoint relative = position - projectile;
 	return sqrt(pow(relative.x, 2) + pow(relative.y, 2)) < size;
 }
+
+void Enemy::move(double time) {
+
+	std::uniform_int_distribution<int> movement(-1, 1);
+
+	if (side == LEFT) movement = std::uniform_int_distribution<int>(0, 5);
+	else if (side == RIGHT) movement = std::uniform_int_distribution<int>(-5, 0);
+
+	position.x += movement(randomGen) * time;
+}

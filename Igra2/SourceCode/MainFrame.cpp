@@ -23,16 +23,21 @@ MainFrame::MainFrame(const wxString& title) : wxFrame(nullptr, wxID_ANY, title) 
 
 void MainFrame::OnAddButtonClicked(wxCommandEvent& evt) {
 
-	std::uniform_int_distribution<int> sizeDistrib(this->FromDIP(50), this->FromDIP(100));
-	std::uniform_int_distribution<int> xDistrib(0, canvas->GetSize().GetWidth());
-	std::uniform_int_distribution<int> yDistrib(0, canvas->GetSize().GetHeight());
-	std::uniform_real_distribution<double> angleDistrib(0., 2 * M_PI);
+	std::uniform_int_distribution<int> sizeDistrib(10, 20);
+	double polmer = sizeDistrib(randomGen);
 
-	std::uniform_int_distribution<int> colourDistrib(0, 0xFFFFFF);
+	std::uniform_int_distribution<int> xDistrib(polmer, canvas->GetSize().GetWidth() - polmer); /////////// dat izven vidnega kota
+	std::uniform_int_distribution<int> yDistrib(polmer, 200 + polmer);
 
-	rectCount++;
-	canvas->addEnemy(sizeDistrib(randomGen), sizeDistrib(randomGen), xDistrib(randomGen), yDistrib(randomGen),
-					angleDistrib(randomGen), wxColour(colourDistrib(randomGen)), "rect #" + std::to_string(rectCount));
+	//std::uniform_real_distribution<double> angleDistrib(0., 2 * M_PI);
+
+	//std::uniform_int_distribution<int> colourDistrib(0, 0xFFFFFF);
+
+	//rectCount++;
+	//canvas->addEnemy(sizeDistrib(randomGen), sizeDistrib(randomGen), xDistrib(randomGen), yDistrib(randomGen),
+	//				angleDistrib(randomGen), wxColour(colourDistrib(randomGen)), "rect #" + std::to_string(rectCount));
+
+	canvas->addEnemy(10, NORMAL, wxPoint(xDistrib(randomGen), yDistrib(randomGen)), polmer);
 }
 
 void MainFrame::OnRemovedButtonClicked(wxCommandEvent& evt) {

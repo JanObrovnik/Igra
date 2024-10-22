@@ -20,5 +20,5 @@ private:
 	DrawingCanvas* canvas;
 
 	int rectCount = 0;
-	std::mt19937 randomGen;
+	std::mt19937 randomGen; /////////// vedno enak seed
 };
