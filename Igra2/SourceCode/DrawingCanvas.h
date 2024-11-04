@@ -18,6 +18,8 @@ public:
 
 	int getObjectCout() { return objectList.size(); }
 
+	void simulirajChange();
+
 private:
 	void OnPaint(wxPaintEvent& evt);
 	void OnMouseDown(wxMouseEvent& evt);
@@ -39,8 +41,10 @@ private:
 	wxPoint2DDouble lastDragOrigin;
 
 
-	Pratoria hero = Pratoria(24, BURST, wxPoint(200, 650), 20);
+	Pratoria hero = Pratoria(24, NORMAL, wxPoint(200, 650), 20);
 	std::list<Enemy> enemyList;
 	std::list<Projectile> projectileList;
+
+	bool simuliraj = false;
 };
 

@@ -56,13 +56,14 @@ private:
 
 class Entety {
 
-public:
+protected:
 	int health;
 	ProjectileType projectileType;
 	ProjectileOrigin origin;
+
+public:
 	wxPoint position; // za okroglega
 	double size; // za okroglega
-
 
 	bool collision(wxPoint projectile);
 
@@ -70,6 +71,8 @@ public:
 	void heal(int healAmount) { health += healAmount; }
 
 	int getHealth() const { return health; }
+	ProjectileType getProjectileType() const { return projectileType; }
+	ProjectileOrigin getOrigin() const { return origin; }
 
 	void setPosition(wxPoint position) { this->position = position; }
 };

@@ -14,7 +14,7 @@ void Projectile::setProperties(ProjectileType type, ProjectileOrigin origin) { /
 		velocity = wxPoint(0, 1);
 		acceleration = wxPoint(0, 0);
 		size = 4;
-		bounds = 500;
+		bounds = 600;
 		break;
 	
 	case BURST:

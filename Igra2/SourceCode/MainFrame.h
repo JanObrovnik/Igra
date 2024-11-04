@@ -11,6 +11,7 @@ public:
 private:
 	void OnAddButtonClicked(wxCommandEvent& evt);
 	void OnRemovedButtonClicked(wxCommandEvent& evt);
+	void OnSimButtonClicked(wxCommandEvent& evt);
 
 	void OnRectAdded(wxCommandEvent& evt);
 	void OnRectRemoved(wxCommandEvent& evt);

@@ -74,6 +74,18 @@ void DrawingCanvas::removeTopRect() {
 	}
 }
 
+void DrawingCanvas::simulirajChange() {
+
+	if (simuliraj) simuliraj = false;
+	else simuliraj = true;
+
+	while (simuliraj) {
+
+		wxYield();
+		Refresh();
+	}
+}
+
 
 void DrawingCanvas::OnPaint(wxPaintEvent& evt) {
 
@@ -166,7 +178,7 @@ void DrawingCanvas::OnMouseDown(wxMouseEvent& evt) {
 	}
 
 	else {
-		projectileList.push_back(Projectile(hero.projectileType, hero.origin, hero.position));
+		projectileList.push_back(Projectile(hero.getProjectileType(), hero.getOrigin(), hero.position));
 		Refresh();
 	}
 }

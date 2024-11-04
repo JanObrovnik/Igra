@@ -45,6 +45,12 @@ void MainFrame::OnRemovedButtonClicked(wxCommandEvent& evt) {
 	canvas->removeTopRect();
 }
 
+void MainFrame::OnSimButtonClicked(wxCommandEvent& evt) {
+
+	canvas->simulirajChange();
+}
+
+
 void MainFrame::OnRectAdded(wxCommandEvent& evt) {
 
 	SetStatusText("Rect named " + evt.GetString() + "added.");
@@ -60,15 +66,18 @@ wxPanel* MainFrame::createButtonPanel(wxWindow* parent) {
 	wxPanel* panel = new wxPanel(parent);
 	wxButton* addRectButton = new wxButton(panel, wxID_ANY, "Add Rect");
 	wxButton* removeRectButton = new wxButton(panel, wxID_ANY, "Remove Rect");
+	wxButton* simButton = new wxButton(panel, wxID_ANY, "Sumilate");
 
 	wxSizer* sizer = new wxBoxSizer(wxHORIZONTAL);
 	sizer->Add(addRectButton, 0, wxEXPAND | wxALL);
 	sizer->Add(removeRectButton, 0, wxEXPAND | wxALL);
+	sizer->Add(simButton, 0, wxEXPAND | wxALL);
 
 	panel->SetSizer(sizer);
 
 	addRectButton->Bind(wxEVT_BUTTON, &MainFrame::OnAddButtonClicked, this);
 	removeRectButton->Bind(wxEVT_BUTTON, &MainFrame::OnRemovedButtonClicked, this);
+	simButton->Bind(wxEVT_BUTTON, &MainFrame::OnSimButtonClicked, this);
 
 	return panel;
 }
